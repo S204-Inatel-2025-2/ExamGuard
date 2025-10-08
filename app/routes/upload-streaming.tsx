@@ -198,14 +198,14 @@ function UploadStreaming() {
             {!isRecording && !recordedUrl && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
                 <div className="text-center space-y-4">
-                  <Video className="w-20 h-20 text-gray-500 mx-auto" />
+                  <Video data-testid="video-icon" className="w-20 h-20 text-gray-500 mx-auto" />
                   <p className="text-gray-400 text-sm">Câmera desligada</p>
                 </div>
               </div>
             )}
 
             {isRecording && (
-              <div className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+              <div data-testid="recording-indicator" className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                 <span className="w-3 h-3 bg-white rounded-full animate-pulse"></span>
                 GRAVANDO
               </div>
@@ -226,7 +226,8 @@ function UploadStreaming() {
                 <span>{uploadProgress}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                <div 
+                <div
+                  role="progressbar"
                   className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-300 rounded-full"
                   style={{ width: `${uploadProgress}%` }}
                 />
