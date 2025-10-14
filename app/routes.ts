@@ -6,10 +6,10 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-  route("login", "routes/login.tsx"),
+  route("login", "pages/login.tsx"),
   layout("layouts/layout.tsx", [
-    index("routes/home.tsx"),
-    route("upload-video", "routes/upload-video.tsx"),
-    route("upload-streaming", "routes/upload-streaming.tsx"),
+    index("pages/home.tsx"),
+    route("upload-video", "pages/upload-video.tsx"),
+    route("upload-streaming", "pages/upload-streaming.tsx"),
   ]),
 ] satisfies RouteConfig;
