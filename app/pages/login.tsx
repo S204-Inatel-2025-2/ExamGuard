@@ -4,36 +4,32 @@ import { useState, useEffect } from "react"
 import { LoginForm } from "~/components/login-form"
 import { RegisterForm } from "~/components/register-form"
 import { useActionData, useNavigate } from "react-router"
-import { form } from "framer-motion/client"
 import { LoginEndpoints } from "~/utils/constants"
 export interface AuthState {
 	state: "login" | "register"
 }
 
 export async function action({ request }: { request: Request }) {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const mode = formData.get("mode") as keyof typeof LoginEndpoints;
-  const endpoint = LoginEndpoints[mode];
-
   try {
-    const response = await api.post(`${import.meta.env.VITE_API_URL}${endpoint}`, {
-      email, password
-    });
-    if(response.status === 200) {
-      const { token } = response.data;
-      // localStorage.setItem("token", token);
-      // return redirect("/dashboard");
-    } 
+    const formData = await request.formData();
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const name = formData.get("name");
+    const mode = formData.get("mode") as keyof typeof LoginEndpoints;
+    const endpoint = LoginEndpoints[mode];
 
-    const token = response.data.token;
+    const apiResponse = await api.post(`${import.meta.env.VITE_API_URL}${endpoint}`, {
+      email,
+      password,
+      name
+    });
+
+    const token = apiResponse.data?.token;
 
     return { token };
-  } catch (error) {
+  } catch (error) { // TODO: improve error handling
     console.error("Error during login:", error);
   }
-  // return redirect("/");
 }
 
 export default function LoginPage() {
