@@ -3,7 +3,7 @@ import { Crosshair } from "lucide-react"
 import { useState, useEffect } from "react"
 import { LoginForm } from "~/components/login-form"
 import { RegisterForm } from "~/components/register-form"
-import { useActionData, redirect } from "react-router"
+import { useActionData, useNavigate } from "react-router"
 import { form } from "framer-motion/client"
 import { LoginEndpoints } from "~/utils/constants"
 export interface AuthState {
@@ -39,11 +39,13 @@ export async function action({ request }: { request: Request }) {
 export default function LoginPage() {
   const actionData = useActionData<typeof action>();
 	const [authState, setAuthState] = useState<AuthState>({ state: "login" })
+  let navigate = useNavigate();
 
   useEffect(() => {
-    console.log(actionData);
-    if (actionData?.token) localStorage.setItem("token", actionData.token);
-    redirect('dashboard');
+    if (actionData?.token) {
+      localStorage.setItem("token", actionData.token);
+      navigate('/dashboard');
+    }
   }, [actionData]);
 
   return (
