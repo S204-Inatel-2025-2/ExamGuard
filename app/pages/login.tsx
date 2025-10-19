@@ -5,6 +5,8 @@ import { LoginForm } from "~/components/login-form"
 import { RegisterForm } from "~/components/register-form"
 import { useActionData, useNavigate } from "react-router"
 import { LoginEndpoints } from "~/utils/constants"
+import { toast } from "sonner"
+import { getLoginErrorMessageFromStatus } from "~/utils/utils"
 export interface AuthState {
 	state: "login" | "register"
 }
@@ -26,9 +28,20 @@ export async function action({ request }: { request: Request }) {
 
     const token = apiResponse.data?.token;
 
-    return { token };
-  } catch (error) { // TODO: improve error handling
-    console.error("Error during login:", error);
+    return { token, mode };
+  } catch (error: any) {
+    const status = error.response?.status ?? 500;
+    const message =
+      error.response?.data?.message ??
+      getLoginErrorMessageFromStatus(error.status) ??
+      "Unexpected server error";
+
+    return {
+      error: {
+        status,
+        message,
+      },
+    };
   }
 }
 
@@ -38,9 +51,17 @@ export default function LoginPage() {
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (actionData?.token) {
+    if (actionData?.mode === 'LOGIN' && actionData.token) {
       localStorage.setItem("token", actionData.token);
+      toast.success('Logged in successfully!');
       navigate('/dashboard');
+    }
+    if (actionData?.mode === 'REGISTER') {
+      setAuthState({ state: 'login' });
+      toast.success('Registered successfully!');
+    }
+    if(actionData?.error) {
+      toast.error(actionData.error.message);
     }
   }, [actionData]);
 
