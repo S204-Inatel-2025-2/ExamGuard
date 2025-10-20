@@ -7,10 +7,14 @@ import {
 
 export default [
   route("login", "pages/login.tsx"),
-  route("dashboard", "pages/dashboard.tsx"),
-  layout("layouts/layout.tsx", [
+  
+  layout("layouts/landing-page.tsx", [
     index("pages/home.tsx"),
-    route("upload-video", "pages/upload-video.tsx"),
-    route("upload-streaming", "pages/upload-streaming.tsx"),
+  ]),
+  
+  layout("layouts/dashboard.tsx", [
+    route("dashboard", "pages/dashboard.tsx"),
+    route("dashboard/upload-video", "pages/upload-video.tsx"),
+    route("dashboard/upload-streaming", "pages/upload-streaming.tsx"),
   ]),
 ] satisfies RouteConfig;
