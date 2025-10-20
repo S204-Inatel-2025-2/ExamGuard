@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "./ui/button";
 
-function Navbar() {
+function LandingPageNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -19,12 +19,6 @@ function Navbar() {
           </a>
 
         <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
-          <Link to="/upload-video" className="hover:text-gray-600">
-            Upload Vídeo
-          </Link>
-          <Link to="/upload-streaming" className="hover:text-gray-600">
-            Upload Streaming
-          </Link>
         </nav>
 
         <div className="hidden md:flex gap-2">
@@ -49,12 +43,6 @@ function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden flex flex-col items-center gap-4 py-4 border-t bg-white"
         >
-          <Link to="/upload-video" className="hover:text-gray-600">
-            Upload Vídeo
-          </Link>
-          <Link to="/upload-streaming" className="hover:text-gray-600">
-            Upload Streaming
-          </Link>
           <div className="flex gap-2">
             <Button variant="outline">Entrar</Button>
             <Button>Cadastro</Button>
@@ -65,4 +53,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default LandingPageNavbar;

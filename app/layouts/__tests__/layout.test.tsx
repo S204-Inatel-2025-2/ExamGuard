@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router'; 
-import Layout from '../layout';
+import Layout from '../dashboard';
 import { expect, test, describe, vi } from 'vitest';
 
 vi.mock('../../components/navbar', () => ({ 
