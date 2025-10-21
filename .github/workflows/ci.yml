@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
@@ -7,10 +7,55 @@ on:
     branches: ["main", "develop", "backup"]
 
 jobs:
-  build-and-test:
+  analise-estatica:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Clonar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente 
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar análise estática (typecheck)
+        run: npm run typecheck
+      
+      - name: Auditar vulnerabilidades de segurança
+        run: npm audit --audit-level=high
+
+  testes-unitarios:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Instalar deps
+        run: npm ci
+
+      - name: Executar testes e gerar cobertura
+        run: npm run test:coverage
+
+      - name: Enviar relatorio de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-cobertura
+          path: ./coverage/
+
+  compilacao:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositório
         uses: actions/checkout@v4
 
       - name: Configurar ambiente
@@ -19,26 +64,90 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Instalar dependências
         run: npm ci
 
-      - name: Run static analysis (typecheck)
-        run: npm run typecheck
-
-      - name: Run tests and generate coverage
-        run: npm run test:coverage
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: ./coverage/
-
-      - name: Build the application
+      - name: Compilar a aplicação
         run: npm run build
 
-      - name: Archive production build
+      - name: Enviar build de produção
         uses: actions/upload-artifact@v4
         with:
-          name: production-build
+          name: build-producao
           path: ./build/
+
+  testes-e2e:
+    needs: compilacao
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      
+      - name: Baixar build de produção
+        uses: actions/download-artifact@v4
+        with:
+          name: build-producao
+          path: ./build/
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes E2E com Cypress
+        run: npm run test:e2e
+      
+      - name: Enviar relatórios do Cypress
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-cypress
+          path: ./cypress/reports/
+
+      - name: Enviar vídeos do Cypress
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-cypress
+          path: ./cypress/videos/
+
+  gerar-relatorio:
+    needs: [testes-unitarios, testes-e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Baixar relatório de cobertura
+        uses: actions/download-artifact@v4
+        with:
+          name: relatorio-cobertura
+          path: ./coverage/
+      
+      - name: Baixar relatórios do Cypress
+        uses: actions/download-artifact@v4
+        with:
+          name: relatorios-cypress
+          path: ./cypress/reports/
+
+      - name: Gerar relatório de teste combinado
+        run: node scripts/generate-report.js
+
+      - name: Enviar relatório de teste combinado
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-combinado-testes
+          path: ./test-report/
