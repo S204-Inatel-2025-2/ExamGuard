@@ -1,0 +1,3077 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+.dockerignore
+.github/workflows/ci.yml
+.gitignore
+app/app.css
+app/components/__tests__/login-form.test.tsx
+app/components/__tests__/navbar.test.tsx
+app/components/login-form.tsx
+app/components/navbar.tsx
+app/components/register-form.tsx
+app/components/ui/__tests__/button.test.tsx
+app/components/ui/__tests__/card.test.tsx
+app/components/ui/__tests__/input.test.tsx
+app/components/ui/__tests__/label.test.tsx
+app/components/ui/button.tsx
+app/components/ui/card.tsx
+app/components/ui/input.tsx
+app/components/ui/label.tsx
+app/components/ui/tabs.tsx
+app/layouts/__tests__/layout.test.tsx
+app/layouts/layout.tsx
+app/lib/__tests__/utils.test.ts
+app/lib/utils.ts
+app/pages/__tests__/home.test.tsx
+app/pages/__tests__/login.test.tsx
+app/pages/__tests__/upload-streaming.test.tsx
+app/pages/__tests__/upload-video.text.tsx
+app/pages/dashboard.tsx
+app/pages/home.tsx
+app/pages/login.tsx
+app/pages/upload-streaming.tsx
+app/pages/upload-video.tsx
+app/root.tsx
+app/routes.ts
+app/routes/__tests__/home.test.tsx
+app/routes/__tests__/login.test.tsx
+app/routes/__tests__/upload-streaming.test.tsx
+app/routes/__tests__/upload-video.text.tsx
+app/routes/home.tsx
+app/routes/upload-streaming.tsx
+app/routes/upload-video.tsx
+components.json
+Dockerfile
+foo.txt
+package.json
+react-router.config.ts
+README.md
+tsconfig.json
+vite.config.ts
+vitest.setup.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".dockerignore">
+.react-router
+build
+node_modules
+README.md
+</file>
+
+<file path=".gitignore">
+.DS_Store
+/node_modules/
+
+# React Router
+/.react-router/
+/build/
+</file>
+
+<file path="app/components/register-form.tsx">
+"use client"
+
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
+import type { AuthState } from "~/pages/login"
+
+export function RegisterForm({ setAuthState }: { setAuthState: (state: AuthState) => void }) {
+  return (
+    <form className="grid gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="name">Name</Label>
+        <Input id="name" type="text" placeholder="John Doe" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" placeholder="me@example.com" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="password">Password</Label>
+        <Input id="password" type="password" />
+      </div>
+      <Button type="submit" className="w-full">
+        Create account
+      </Button>
+        <div className="text-center text-sm">
+        Already have an account?{" "}
+        <button onClick={() => setAuthState({ state: "login" })} className="underline underline-offset-4 cursor-pointer">
+          Sign in
+        </button>
+      </div>
+    </form>
+  )
+}
+</file>
+
+<file path="app/components/ui/button.tsx">
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "~/lib/utils"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }) {
+  const Comp = asChild ? Slot : "button"
+
+  return (
+    <Comp
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+}
+
+export { Button, buttonVariants }
+</file>
+
+<file path="app/components/ui/card.tsx">
+import * as React from "react"
+
+import { cn } from "~/lib/utils"
+
+function Card({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card"
+      className={cn(
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-header"
+      className={cn(
+        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-title"
+      className={cn("leading-none font-semibold", className)}
+      {...props}
+    />
+  )
+}
+
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-description"
+      className={cn("text-muted-foreground text-sm", className)}
+      {...props}
+    />
+  )
+}
+
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-action"
+      className={cn(
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-content"
+      className={cn("px-6", className)}
+      {...props}
+    />
+  )
+}
+
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
+      {...props}
+    />
+  )
+}
+
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+}
+</file>
+
+<file path="app/components/ui/label.tsx">
+import * as React from "react"
+import * as LabelPrimitive from "@radix-ui/react-label"
+
+import { cn } from "~/lib/utils"
+
+function Label({
+  className,
+  ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+  return (
+    <LabelPrimitive.Root
+      data-slot="label"
+      className={cn(
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Label }
+</file>
+
+<file path="app/components/ui/tabs.tsx">
+import * as React from "react"
+import * as TabsPrimitive from "@radix-ui/react-tabs"
+
+import { cn } from "~/lib/utils"
+
+function Tabs({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+  return (
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      className={cn("flex flex-col gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+function TabsList({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.List>) {
+  return (
+    <TabsPrimitive.List
+      data-slot="tabs-list"
+      className={cn(
+        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function TabsTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+  return (
+    <TabsPrimitive.Trigger
+      data-slot="tabs-trigger"
+      className={cn(
+        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function TabsContent({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Content>) {
+  return (
+    <TabsPrimitive.Content
+      data-slot="tabs-content"
+      className={cn("flex-1 outline-none", className)}
+      {...props}
+    />
+  )
+}
+
+export { Tabs, TabsList, TabsTrigger, TabsContent }
+</file>
+
+<file path="app/lib/utils.ts">
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+</file>
+
+<file path="app/pages/__tests__/home.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router';
+import Home from '../home';
+import { expect, test, describe, vi } from 'vitest';
+
+const mockNavigate = vi.fn();
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+describe('Home Page', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
+
+  test('Renders title "ExamGuard" and description', () => {
+    render(<Home />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('heading', { name: /examguard/i })).toBeInTheDocument();
+    expect(screen.getByText(/assistente computacional anti-trapaça/i)).toBeInTheDocument();
+  });
+
+  test('Renders "Entrar" and "Cadastro" buttons and verifies navigation', async () => {
+    render(<Home />, { wrapper: MemoryRouter });
+    const entrarButton = screen.getByRole('button', { name: /entrar/i });
+    await userEvent.click(entrarButton);
+    expect(mockNavigate).toHaveBeenCalledWith('/login');
+  });
+
+  test('Renders both feature cards', () => {
+    render(<Home />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('heading', { name: /monitoramento em tempo real/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /relatórios inteligentes/i })).toBeInTheDocument();
+  });
+});
+</file>
+
+<file path="app/pages/__tests__/login.test.tsx">
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router'; 
+import LoginPage from '../login';
+import { expect, test, describe, vi } from 'vitest';
+
+vi.mock('~/components/login-form', () => ({
+  LoginForm: () => <div data-testid="mock-login-form">Mock Login Form</div>,
+}));
+
+describe('LoginPage', () => {
+  test('Renders LoginForm component', () => {
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    expect(screen.getByTestId('mock-login-form')).toBeInTheDocument();
+  });
+
+  test('Renders the ExamGuard logo and name', () => {
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    expect(screen.getByText('ExamGuard')).toBeInTheDocument();
+  });
+
+  test('Renders the mascot image', () => {
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    const mascotImage = screen.getByAltText('Image');
+    expect(mascotImage).toBeInTheDocument();
+    expect(mascotImage).toHaveAttribute('src', '/login-mascot.png');
+  });
+});
+</file>
+
+<file path="app/pages/__tests__/upload-streaming.test.tsx">
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import UploadStreaming from '../upload-streaming';
+import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest';
+
+const mockMediaStreamTrack = { stop: vi.fn() };
+const mockMediaStream = { getTracks: () => [mockMediaStreamTrack] };
+let mockMediaRecorderInstance: any;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+
+  mockMediaRecorderInstance = {
+    start: vi.fn(),
+    stop: vi.fn(),
+    ondataavailable: null,
+    onstop: null,
+  };
+
+  global.MediaRecorder = vi.fn(() => mockMediaRecorderInstance) as any;
+
+  Object.defineProperty(navigator, 'mediaDevices', {
+    value: {
+      getUserMedia: vi.fn().mockResolvedValue(mockMediaStream),
+    },
+    writable: true,
+  });
+
+  global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+  global.URL.revokeObjectURL = vi.fn();
+  global.alert = vi.fn();
+});
+
+describe('UploadStreaming', () => {
+  test('Initially displays "Câmera desligada" message', () => {
+    render(<UploadStreaming />);
+    expect(screen.getByText(/câmera desligada/i)).toBeInTheDocument();
+    expect(screen.getByTestId('video-icon')).toBeInTheDocument();
+  });
+
+  test('`startRecording` initiates camera access and video stream', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalled();
+      expect(screen.getByTestId('recording-indicator')).toBeInTheDocument();
+      expect(mockMediaRecorderInstance.start).toHaveBeenCalledWith(2000);
+    });
+  });
+
+  test('`stopRecording` stops recording and stream', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
+    mockMediaRecorderInstance.onstop(); // Manually trigger onstop
+    await waitFor(() => {
+      expect(mockMediaRecorderInstance.stop).toHaveBeenCalled();
+      expect(screen.getByText(/gravação finalizada! revise e envie/i)).toBeInTheDocument();
+    });
+  });
+
+  test('`handleCancel` resets state', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
+    mockMediaRecorderInstance.onstop();
+    await userEvent.click(await screen.findByRole('button', { name: /descartar/i }));
+    expect(screen.getByText(/câmera desligada/i)).toBeInTheDocument();
+  });
+
+  test('`handleFinalUpload` shows progress and alert', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+
+    // Simulate getting a chunk of data
+    mockMediaRecorderInstance.ondataavailable({ data: new Blob(['chunk1']) });
+
+    await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
+    mockMediaRecorderInstance.onstop();
+
+    await userEvent.click(await screen.findByRole('button', { name: /enviar vídeo/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/enviando vídeo final.../i)).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith('Vídeo enviado com sucesso! ✅');
+    }, { timeout: 3000 });
+  });
+
+  test('Error handling for camera access', async () => {
+    (navigator.mediaDevices.getUserMedia as vi.Mock).mockRejectedValueOnce(new Error('Permission denied'));
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith('Não foi possível acessar a câmera. Verifique as permissões.');
+    });
+  });
+});
+</file>
+
+<file path="app/pages/__tests__/upload-video.text.tsx">
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import UploadVideo from '../upload-video';
+import { expect, test, describe, vi } from 'vitest';
+
+describe('UploadVideo', () => {
+  beforeEach(() => {
+    global.URL.createObjectURL = vi.fn(() => 'blob:mock-video-url');
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test('Initially displays the upload prompt', () => {
+    render(<UploadVideo />);
+    expect(screen.getByText(/clique para selecionar um vídeo/i)).toBeInTheDocument();
+    expect(screen.queryByRole('video')).not.toBeInTheDocument();
+  });
+
+  test('handleFileChange updates state and displays video preview', async () => {
+    render(<UploadVideo />);
+    const file = new File(['dummy content'], 'video.mp4', { type: 'video/mp4' });
+    const input = screen.getByLabelText(/clique para selecionar um vídeo/i).previousElementSibling as HTMLInputElement;
+
+    await userEvent.upload(input, file);
+
+    await waitFor(() => {
+      expect(screen.getByText('video.mp4')).toBeInTheDocument();
+      const videoElement = document.querySelector('video');
+      expect(videoElement).toBeInTheDocument();
+      expect(videoElement?.src).toBe('blob:mock-video-url');
+    });
+  });
+
+  test('handleCancel resets state and clears the file input', async () => {
+    render(<UploadVideo />);
+    const file = new File(['dummy content'], 'video.mp4', { type: 'video/mp4' });
+    const input = screen.getByLabelText(/clique para selecionar um vídeo/i).previousElementSibling as HTMLInputElement;
+
+    await userEvent.upload(input, file);
+    
+    const cancelButton = await screen.findByRole('button'); 
+    await userEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/clique para selecionar um vídeo/i)).toBeInTheDocument();
+      expect(screen.queryByText('video.mp4')).not.toBeInTheDocument();
+      expect(input.value).toBe('');
+    });
+  });
+
+  test('"Enviar Vídeo" button calls handleUpload', async () => {
+    render(<UploadVideo />);
+    const file = new File(['dummy content'], 'video.mp4', { type: 'video/mp4' });
+    const input = screen.getByLabelText(/clique para selecionar um vídeo/i).previousElementSibling as HTMLInputElement;
+
+    await userEvent.upload(input, file);
+    
+    const uploadButton = screen.getByRole('button', { name: /enviar vídeo/i });
+    await userEvent.click(uploadButton);
+
+    expect(console.log).toHaveBeenCalledWith('Uploading:', file);
+  });
+});
+</file>
+
+<file path="app/pages/dashboard.tsx">
+export default function dashboard() {
+  return (
+    <div>dashboard</div>
+  )
+}
+</file>
+
+<file path="app/pages/home.tsx">
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+} from "../components/ui/card"
+import { Button } from "../components/ui/button";
+import { useNavigate } from "react-router";
+
+export default function Home() {
+  const navigate = useNavigate();
+  
+  return (
+    <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-16">
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-5xl font-bold mb-4"
+      >
+        ExamGuard
+      </motion.h1>
+      <p className="text-lg text-gray-600 mb-8">
+        Assistente Computacional Anti-trapaça para garantir provas seguras.
+      </p>
+      <div className="flex gap-4">
+        <Button variant="outline" onClick={() => navigate("/login")}>Entrar</Button>
+        <Button>Cadastro</Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 max-w-4xl w-full">
+        <Card className="shadow-lg rounded-2xl">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Monitoramento em tempo real
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Detecte comportamentos suspeitos durante avaliações online.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg rounded-2xl">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Relatórios inteligentes
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Geração automática de insights sobre possíveis tentativas de
+              fraude.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="app/pages/login.tsx">
+import { Crosshair } from "lucide-react"
+import { useState } from "react"
+import { LoginForm } from "~/components/login-form"
+import { RegisterForm } from "~/components/register-form"
+export interface AuthState {
+	state: "login" | "register"
+}
+
+export default function LoginPage() {
+	const [authState, setAuthState] = useState<AuthState>({ state: "login" })
+  return (
+    <div className="grid min-h-svh lg:grid-cols-2">
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <a href="#" className="flex items-center gap-2 font-medium">
+            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+              <Crosshair className="size-4" />
+            </div>
+            ExamGuard
+          </a>
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-xs">
+            {  authState.state === 'login' && <LoginForm setAuthState={setAuthState} /> }
+            {  authState.state === 'register' && <RegisterForm setAuthState={setAuthState} /> }
+          </div>
+        </div>
+      </div>
+      <div className="bg-muted relative hidden lg:block">
+        <img
+          src="/login-mascot.png"
+          alt="Image"
+          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        />
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="app/pages/upload-streaming.tsx">
+import { useState, useRef, useEffect } from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Video, Square, Trash2, Upload } from "lucide-react";
+
+function UploadStreaming() {
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 1280, height: 720 },
+        audio: true
+      });
+
+      streamRef.current = stream;
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm;codecs=vp8,opus'
+      });
+
+      const chunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+          setRecordedChunks(prev => [...prev, event.data]);
+          // Envio em tempo real para o backend
+          sendChunkToBackend(event.data, chunks.length);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        setRecordedUrl(URL.createObjectURL(blob));
+        
+        // Para o stream da câmera
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start(2000); // Gera chunks a cada 2 segundos
+      setIsRecording(true);
+      setRecordedChunks([]);
+    } catch (error) {
+      console.error("Erro ao acessar câmera:", error);
+      alert("Não foi possível acessar a câmera. Verifique as permissões.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
+
+  const sendChunkToBackend = async (chunk: Blob, chunkIndex: number) => {
+    try {
+      console.log(`📤 Enviando chunk ${chunkIndex} para backend:`, chunk.size, "bytes");
+      
+      // Simulação de envio
+      // Descomente e adapte para seu backend real:
+      /*
+      const formData = new FormData();
+      formData.append('chunk', chunk);
+      formData.append('chunkIndex', chunkIndex.toString());
+      formData.append('timestamp', Date.now().toString());
+      
+      const response = await fetch('https://seu-backend.com/api/upload-chunk', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        console.error('Erro ao enviar chunk:', chunkIndex);
+      }
+      */
+    } catch (error) {
+      console.error('Erro no envio do chunk:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setRecordedChunks([]);
+    setRecordedUrl(null);
+    setUploadProgress(0);
+    
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+  };
+
+  const handleFinalUpload = async () => {
+    if (recordedChunks.length === 0) return;
+
+    setIsUploading(true);
+    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+    
+    try {
+      console.log("🚀 Fazendo upload final do vídeo completo:", blob.size, "bytes");
+
+      // Simulação de progresso
+      for (let i = 0; i <= 100; i += 10) {
+        setUploadProgress(i);
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
+      // Upload real:
+      /*
+      const formData = new FormData();
+      formData.append('video', blob, 'aula.webm');
+      formData.append('totalChunks', recordedChunks.length.toString());
+      
+      const xhr = new XMLHttpRequest();
+      
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const progress = (e.loaded / e.total) * 100;
+          setUploadProgress(Math.round(progress));
+        }
+      });
+      
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          alert("Vídeo enviado com sucesso! ✅");
+          handleCancel();
+        }
+      });
+      
+      xhr.open('POST', 'https://seu-backend.com/api/finalize-upload');
+      xhr.send(formData);
+      */
+      
+      alert("Vídeo enviado com sucesso! ✅");
+      handleCancel();
+    } catch (error) {
+      console.error('Erro no upload final:', error);
+      alert('Erro ao enviar o vídeo. Tente novamente.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (recordedUrl) {
+        URL.revokeObjectURL(recordedUrl);
+      }
+    };
+  }, [recordedUrl]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Card className="w-full max-w-3xl shadow-2xl rounded-3xl overflow-hidden">
+        <CardContent className="space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-bold text-gray-800">Gravar Aula</h2>
+            <p className="text-gray-600">
+              {isRecording && "🔴 Gravando e enviando para o servidor..."}
+              {!isRecording && !recordedUrl && "Clique para iniciar a gravação da sua aula"}
+              {recordedUrl && "Gravação finalizada! Revise e envie"}
+            </p>
+          </div>
+
+          {/* Video Preview */}
+          <div className="relative bg-black rounded-2xl overflow-hidden aspect-video shadow-lg">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+              controls={recordedUrl ? true : false}
+              className="w-full h-full object-cover"
+              src={recordedUrl || undefined}
+            />
+            
+            {!isRecording && !recordedUrl && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+                <div className="text-center space-y-4">
+                  <Video data-testid="video-icon" className="w-20 h-20 text-gray-500 mx-auto" />
+                  <p className="text-gray-400 text-sm">Câmera desligada</p>
+                </div>
+              </div>
+            )}
+
+            {isRecording && (
+              <div data-testid="recording-indicator" className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                <span className="w-3 h-3 bg-white rounded-full animate-pulse"></span>
+                GRAVANDO
+              </div>
+            )}
+
+            {recordedChunks.length > 0 && isRecording && (
+              <div className="absolute bottom-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg text-xs backdrop-blur">
+                📦 {recordedChunks.length} chunks enviados
+              </div>
+            )}
+          </div>
+
+          {/* Upload Progress */}
+          {isUploading && (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Enviando vídeo final...</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div
+                  role="progressbar"
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-300 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Stats */}
+          {recordedChunks.length > 0 && !isRecording && (
+            <div className="grid grid-cols-2 gap-4 p-4 bg-blue-50 rounded-xl">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">{recordedChunks.length}</p>
+                <p className="text-xs text-gray-600">Chunks gravados</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">
+                  {(recordedChunks.reduce((acc, chunk) => acc + chunk.size, 0) / 1024 / 1024).toFixed(2)} MB
+                </p>
+                <p className="text-xs text-gray-600">Tamanho total</p>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 justify-center flex-wrap">
+            {!isRecording && !recordedUrl && (
+              <Button
+                size="lg"
+                onClick={startRecording}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg px-8 py-6 text-lg"
+              >
+                <Video className="w-6 h-6 mr-2" />
+                Iniciar Gravação
+              </Button>
+            )}
+
+            {isRecording && (
+              <Button
+                size="lg"
+                onClick={stopRecording}
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg px-8 py-6 text-lg"
+              >
+                <Square className="w-6 h-6 mr-2" />
+                Parar Gravação
+              </Button>
+            )}
+
+            {recordedUrl && !isUploading && (
+              <>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="border-2 border-gray-300 hover:bg-gray-100 px-6 py-6"
+                >
+                  <Trash2 className="w-5 h-5 mr-2" />
+                  Descartar
+                </Button>
+                <Button
+                  size="lg"
+                  onClick={handleFinalUpload}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg px-8 py-6 text-lg"
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  Enviar Vídeo
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Info Box */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 text-sm text-gray-700">
+            <p className="font-semibold mb-1">💡 Como funciona:</p>
+            <ul className="space-y-1 text-xs">
+              <li>• A gravação é enviada em chunks de 2 segundos para o servidor</li>
+              <li>• Você pode gravar aulas longas sem preocupação</li>
+              <li>• O vídeo final pode ser processado por IA após o envio</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default UploadStreaming;
+</file>
+
+<file path="app/pages/upload-video.tsx">
+import { useState, useRef } from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardAction, CardContent } from "../components/ui/card";
+import { X } from "lucide-react";
+
+function UploadVideo() {
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setVideoFile(file);
+      setVideoUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleCancel = () => {
+    setVideoFile(null);
+    setVideoUrl(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
+  const handleUpload = () => {
+    if (videoFile) {
+      console.log("Uploading:", videoFile);
+    }
+  };
+
+  return (
+    <div className="flex-1 flex items-center justify-center bg-gray-50 p-6">
+      <Card className="w-full max-w-lg shadow-lg rounded-2xl">
+        <CardContent className="px-6 space-y-4">
+          <h2 className="text-2xl font-semibold text-center">
+            Upload de Vídeo
+          </h2>
+
+          {!videoFile && (
+            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 bg-white">
+              <input
+                ref={inputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleFileChange}
+                className="hidden"
+                id="video-upload"
+              />
+              <label
+                htmlFor="video-upload"
+                className="cursor-pointer text-sm text-gray-600 hover:text-gray-900"
+              >
+                Clique para selecionar um vídeo
+              </label>
+            </div>
+          )}
+
+          {videoFile && videoUrl && (
+            <div className="space-y-4">
+              <div className="relative">
+                <video
+                  controls
+                  className="w-full rounded-lg shadow"
+                  src={videoUrl}
+                />
+                <button
+                  onClick={handleCancel}
+                  className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex justify-center">
+                <span className="text-sm text-gray-600 truncate max-w-[200px]">
+                  {videoFile.name}
+                </span>
+              </div>
+            </div>
+          )}
+        </CardContent>
+        <CardAction className="w-full text-center px-6">
+          <Button
+            size="lg"
+            variant="default"
+            className="cursor-pointer"
+            onClick={handleUpload}
+          >
+            Enviar Vídeo
+          </Button>
+        </CardAction>
+      </Card>
+    </div>
+  );
+}
+
+export default UploadVideo;
+</file>
+
+<file path="app/root.tsx">
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from "react-router";
+
+import type { Route } from "./+types/root";
+import "./app.css";
+
+export const links: Route.LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  },
+];
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+export default function App() {
+  return <Outlet />;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details =
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
+  } else if (import.meta.env.DEV && error && error instanceof Error) {
+    details = error.message;
+    stack = error.stack;
+  }
+
+  return (
+    <main className="pt-16 p-4 container mx-auto">
+      <h1>{message}</h1>
+      <p>{details}</p>
+      {stack && (
+        <pre className="w-full p-4 overflow-x-auto">
+          <code>{stack}</code>
+        </pre>
+      )}
+    </main>
+  );
+}
+</file>
+
+<file path="app/routes/__tests__/home.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router';
+import Home from '../home';
+import { expect, test, describe, vi } from 'vitest';
+
+const mockNavigate = vi.fn();
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+describe('Home Page', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
+
+  test('Renders title "ExamGuard" and description', () => {
+    render(<Home />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('heading', { name: /examguard/i })).toBeInTheDocument();
+    expect(screen.getByText(/assistente computacional anti-trapaça/i)).toBeInTheDocument();
+  });
+
+  test('Renders "Entrar" and "Cadastro" buttons and verifies navigation', async () => {
+    render(<Home />, { wrapper: MemoryRouter });
+    const entrarButton = screen.getByRole('button', { name: /entrar/i });
+    await userEvent.click(entrarButton);
+    expect(mockNavigate).toHaveBeenCalledWith('/login');
+  });
+
+  test('Renders both feature cards', () => {
+    render(<Home />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('heading', { name: /monitoramento em tempo real/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /relatórios inteligentes/i })).toBeInTheDocument();
+  });
+});
+</file>
+
+<file path="app/routes/__tests__/login.test.tsx">
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router'; 
+import LoginPage from '../login';
+import { expect, test, describe, vi } from 'vitest';
+
+vi.mock('~/components/login-form', () => ({
+  LoginForm: () => <div data-testid="mock-login-form">Mock Login Form</div>,
+}));
+
+describe('LoginPage', () => {
+  test('Renders LoginForm component', () => {
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    expect(screen.getByTestId('mock-login-form')).toBeInTheDocument();
+  });
+
+  test('Renders the ExamGuard logo and name', () => {
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    expect(screen.getByText('ExamGuard')).toBeInTheDocument();
+  });
+
+  test('Renders the mascot image', () => {
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    const mascotImage = screen.getByAltText('Image');
+    expect(mascotImage).toBeInTheDocument();
+    expect(mascotImage).toHaveAttribute('src', '/login-mascot.png');
+  });
+});
+</file>
+
+<file path="app/routes/__tests__/upload-streaming.test.tsx">
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import UploadStreaming from '../upload-streaming';
+import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest';
+
+const mockMediaStreamTrack = { stop: vi.fn() };
+const mockMediaStream = { getTracks: () => [mockMediaStreamTrack] };
+let mockMediaRecorderInstance: any;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+
+  mockMediaRecorderInstance = {
+    start: vi.fn(),
+    stop: vi.fn(),
+    ondataavailable: null,
+    onstop: null,
+  };
+
+  global.MediaRecorder = vi.fn(() => mockMediaRecorderInstance) as any;
+
+  Object.defineProperty(navigator, 'mediaDevices', {
+    value: {
+      getUserMedia: vi.fn().mockResolvedValue(mockMediaStream),
+    },
+    writable: true,
+  });
+
+  global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+  global.URL.revokeObjectURL = vi.fn();
+  global.alert = vi.fn();
+});
+
+describe('UploadStreaming', () => {
+  test('Initially displays "Câmera desligada" message', () => {
+    render(<UploadStreaming />);
+    expect(screen.getByText(/câmera desligada/i)).toBeInTheDocument();
+    expect(screen.getByTestId('video-icon')).toBeInTheDocument();
+  });
+
+  test('`startRecording` initiates camera access and video stream', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalled();
+      expect(screen.getByTestId('recording-indicator')).toBeInTheDocument();
+      expect(mockMediaRecorderInstance.start).toHaveBeenCalledWith(2000);
+    });
+  });
+
+  test('`stopRecording` stops recording and stream', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
+    mockMediaRecorderInstance.onstop(); // Manually trigger onstop
+    await waitFor(() => {
+      expect(mockMediaRecorderInstance.stop).toHaveBeenCalled();
+      expect(screen.getByText(/gravação finalizada! revise e envie/i)).toBeInTheDocument();
+    });
+  });
+
+  test('`handleCancel` resets state', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
+    mockMediaRecorderInstance.onstop();
+    await userEvent.click(await screen.findByRole('button', { name: /descartar/i }));
+    expect(screen.getByText(/câmera desligada/i)).toBeInTheDocument();
+  });
+
+  test('`handleFinalUpload` shows progress and alert', async () => {
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+
+    // Simulate getting a chunk of data
+    mockMediaRecorderInstance.ondataavailable({ data: new Blob(['chunk1']) });
+
+    await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
+    mockMediaRecorderInstance.onstop();
+
+    await userEvent.click(await screen.findByRole('button', { name: /enviar vídeo/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/enviando vídeo final.../i)).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith('Vídeo enviado com sucesso! ✅');
+    }, { timeout: 3000 });
+  });
+
+  test('Error handling for camera access', async () => {
+    (navigator.mediaDevices.getUserMedia as vi.Mock).mockRejectedValueOnce(new Error('Permission denied'));
+    render(<UploadStreaming />);
+    await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith('Não foi possível acessar a câmera. Verifique as permissões.');
+    });
+  });
+});
+</file>
+
+<file path="app/routes/__tests__/upload-video.text.tsx">
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import UploadVideo from '../upload-video';
+import { expect, test, describe, vi } from 'vitest';
+
+describe('UploadVideo', () => {
+  beforeEach(() => {
+    global.URL.createObjectURL = vi.fn(() => 'blob:mock-video-url');
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test('Initially displays the upload prompt', () => {
+    render(<UploadVideo />);
+    expect(screen.getByText(/clique para selecionar um vídeo/i)).toBeInTheDocument();
+    expect(screen.queryByRole('video')).not.toBeInTheDocument();
+  });
+
+  test('handleFileChange updates state and displays video preview', async () => {
+    render(<UploadVideo />);
+    const file = new File(['dummy content'], 'video.mp4', { type: 'video/mp4' });
+    const input = screen.getByLabelText(/clique para selecionar um vídeo/i).previousElementSibling as HTMLInputElement;
+
+    await userEvent.upload(input, file);
+
+    await waitFor(() => {
+      expect(screen.getByText('video.mp4')).toBeInTheDocument();
+      const videoElement = document.querySelector('video');
+      expect(videoElement).toBeInTheDocument();
+      expect(videoElement?.src).toBe('blob:mock-video-url');
+    });
+  });
+
+  test('handleCancel resets state and clears the file input', async () => {
+    render(<UploadVideo />);
+    const file = new File(['dummy content'], 'video.mp4', { type: 'video/mp4' });
+    const input = screen.getByLabelText(/clique para selecionar um vídeo/i).previousElementSibling as HTMLInputElement;
+
+    await userEvent.upload(input, file);
+    
+    const cancelButton = await screen.findByRole('button'); 
+    await userEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/clique para selecionar um vídeo/i)).toBeInTheDocument();
+      expect(screen.queryByText('video.mp4')).not.toBeInTheDocument();
+      expect(input.value).toBe('');
+    });
+  });
+
+  test('"Enviar Vídeo" button calls handleUpload', async () => {
+    render(<UploadVideo />);
+    const file = new File(['dummy content'], 'video.mp4', { type: 'video/mp4' });
+    const input = screen.getByLabelText(/clique para selecionar um vídeo/i).previousElementSibling as HTMLInputElement;
+
+    await userEvent.upload(input, file);
+    
+    const uploadButton = screen.getByRole('button', { name: /enviar vídeo/i });
+    await userEvent.click(uploadButton);
+
+    expect(console.log).toHaveBeenCalledWith('Uploading:', file);
+  });
+});
+</file>
+
+<file path="app/routes/upload-video.tsx">
+import { useState, useRef } from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardAction, CardContent } from "../components/ui/card";
+import { X } from "lucide-react";
+
+function UploadVideo() {
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setVideoFile(file);
+      setVideoUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleCancel = () => {
+    setVideoFile(null);
+    setVideoUrl(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
+  const handleUpload = () => {
+    if (videoFile) {
+      console.log("Uploading:", videoFile);
+    }
+  };
+
+  return (
+    <div className="flex-1 flex items-center justify-center bg-gray-50 p-6">
+      <Card className="w-full max-w-lg shadow-lg rounded-2xl">
+        <CardContent className="px-6 space-y-4">
+          <h2 className="text-2xl font-semibold text-center">
+            Upload de Vídeo
+          </h2>
+
+          {!videoFile && (
+            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 bg-white">
+              <input
+                ref={inputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleFileChange}
+                className="hidden"
+                id="video-upload"
+              />
+              <label
+                htmlFor="video-upload"
+                className="cursor-pointer text-sm text-gray-600 hover:text-gray-900"
+              >
+                Clique para selecionar um vídeo
+              </label>
+            </div>
+          )}
+
+          {videoFile && videoUrl && (
+            <div className="space-y-4">
+              <div className="relative">
+                <video
+                  controls
+                  className="w-full rounded-lg shadow"
+                  src={videoUrl}
+                />
+                <button
+                  onClick={handleCancel}
+                  className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex justify-center">
+                <span className="text-sm text-gray-600 truncate max-w-[200px]">
+                  {videoFile.name}
+                </span>
+              </div>
+            </div>
+          )}
+        </CardContent>
+        <CardAction className="w-full text-center px-6">
+          <Button
+            size="lg"
+            variant="default"
+            className="cursor-pointer"
+            onClick={handleUpload}
+          >
+            Enviar Vídeo
+          </Button>
+        </CardAction>
+      </Card>
+    </div>
+  );
+}
+
+export default UploadVideo;
+</file>
+
+<file path="components.json">
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/app.css",
+    "baseColor": "stone",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "~/components",
+    "utils": "~/lib/utils",
+    "ui": "~/components/ui",
+    "lib": "~/lib",
+    "hooks": "~/hooks"
+  },
+  "registries": {}
+}
+</file>
+
+<file path="Dockerfile">
+FROM node:20-alpine AS development-dependencies-env
+COPY . /app
+WORKDIR /app
+RUN npm ci
+
+FROM node:20-alpine AS production-dependencies-env
+COPY ./package.json package-lock.json /app/
+WORKDIR /app
+RUN npm ci --omit=dev
+
+FROM node:20-alpine AS build-env
+COPY . /app/
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
+RUN npm run build
+
+FROM node:20-alpine
+COPY ./package.json package-lock.json /app/
+COPY --from=production-dependencies-env /app/node_modules /app/node_modules
+COPY --from=build-env /app/build /app/build
+WORKDIR /app
+CMD ["npm", "run", "start"]
+</file>
+
+<file path="react-router.config.ts">
+import type { Config } from "@react-router/dev/config";
+
+export default {
+  // Config options...
+  // Server-side render by default, to enable SPA mode set this to `false`
+  ssr: true,
+} satisfies Config;
+</file>
+
+<file path="README.md">
+# Welcome to React Router!
+
+A modern, production-ready template for building full-stack React applications using React Router.
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+
+## Features
+
+- 🚀 Server-side rendering
+- ⚡️ Hot Module Replacement (HMR)
+- 📦 Asset bundling and optimization
+- 🔄 Data loading and mutations
+- 🔒 TypeScript by default
+- 🎉 TailwindCSS for styling
+- 📖 [React Router docs](https://reactrouter.com/)
+
+## Getting Started
+
+### Installation
+
+Install the dependencies:
+
+```bash
+npm install
+```
+
+### Development
+
+Start the development server with HMR:
+
+```bash
+npm run dev
+```
+
+Your application will be available at `http://localhost:5173`.
+
+## Building for Production
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+## Deployment
+
+### Docker Deployment
+
+To build and run using Docker:
+
+```bash
+docker build -t my-app .
+
+# Run the container
+docker run -p 3000:3000 my-app
+```
+
+The containerized application can be deployed to any platform that supports Docker, including:
+
+- AWS ECS
+- Google Cloud Run
+- Azure Container Apps
+- Digital Ocean App Platform
+- Fly.io
+- Railway
+
+### DIY Deployment
+
+If you're familiar with deploying Node applications, the built-in app server is production-ready.
+
+Make sure to deploy the output of `npm run build`
+
+```
+├── package.json
+├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
+├── build/
+│   ├── client/    # Static assets
+│   └── server/    # Server-side code
+```
+
+## Styling
+
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+
+---
+
+Built with ❤️ using React Router.
+</file>
+
+<file path="tsconfig.json">
+{
+  "include": [
+    "**/*",
+    "**/.server/**/*",
+    "**/.client/**/*",
+    ".react-router/types/**/*"
+  ],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["node", "vite/client"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "rootDirs": [".", "./.react-router/types"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
+</file>
+
+<file path=".github/workflows/ci.yml">
+name: Continuous Integration
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run static analysis (typecheck)
+        run: npm run typecheck
+
+      - name: Run tests and generate coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage/
+
+      - name: Build the application
+        run: npm run build
+
+      - name: Archive production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: ./build/
+</file>
+
+<file path="app/app.css">
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+html,
+body {
+  @apply bg-white dark:bg-gray-950;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.147 0.004 49.25);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.147 0.004 49.25);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.147 0.004 49.25);
+  --primary: oklch(0.216 0.006 56.043);
+  --primary-foreground: oklch(0.985 0.001 106.423);
+  --secondary: oklch(0.97 0.001 106.424);
+  --secondary-foreground: oklch(0.216 0.006 56.043);
+  --muted: oklch(0.97 0.001 106.424);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: oklch(0.97 0.001 106.424);
+  --accent-foreground: oklch(0.216 0.006 56.043);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.923 0.003 48.717);
+  --input: oklch(0.923 0.003 48.717);
+  --ring: oklch(0.709 0.01 56.259);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0.001 106.423);
+  --sidebar-foreground: oklch(0.147 0.004 49.25);
+  --sidebar-primary: oklch(0.216 0.006 56.043);
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
+  --sidebar-border: oklch(0.923 0.003 48.717);
+  --sidebar-ring: oklch(0.709 0.01 56.259);
+}
+
+.dark {
+  --background: oklch(0.147 0.004 49.25);
+  --foreground: oklch(0.985 0.001 106.423);
+  --card: oklch(0.216 0.006 56.043);
+  --card-foreground: oklch(0.985 0.001 106.423);
+  --popover: oklch(0.216 0.006 56.043);
+  --popover-foreground: oklch(0.985 0.001 106.423);
+  --primary: oklch(0.923 0.003 48.717);
+  --primary-foreground: oklch(0.216 0.006 56.043);
+  --secondary: oklch(0.268 0.007 34.298);
+  --secondary-foreground: oklch(0.985 0.001 106.423);
+  --muted: oklch(0.268 0.007 34.298);
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --accent: oklch(0.268 0.007 34.298);
+  --accent-foreground: oklch(0.985 0.001 106.423);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.553 0.013 58.071);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.216 0.006 56.043);
+  --sidebar-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.268 0.007 34.298);
+  --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.553 0.013 58.071);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+</file>
+
+<file path="app/components/__tests__/login-form.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { LoginForm } from '../login-form';
+import { expect, test, describe, vi } from 'vitest';
+
+describe('LoginForm', () => {
+  test('Renders all required elements', () => {
+    render(<LoginForm />);
+
+    expect(screen.getByRole('heading', { name: /login to your account/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/m@example.com/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Login$/i })).toBeInTheDocument(); // Fixed: More specific query
+    expect(screen.getByRole('link', { name: /forgot your password/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /login with github/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /sign up/i })).toBeInTheDocument();
+  });
+
+  test('"Forgot your password?" link navigates correctly', () => {
+    render(<LoginForm />);
+    const forgotPasswordLink = screen.getByRole('link', { name: /forgot your password/i });
+    expect(forgotPasswordLink).toHaveAttribute('href', '#');
+  });
+
+  test('"Login with GitHub" button has SVG icon', () => {
+    render(<LoginForm />);
+    const githubButton = screen.getByRole('button', { name: /login with github/i });
+    expect(githubButton).toBeInTheDocument();
+    expect(githubButton.querySelector('svg')).toBeInTheDocument();
+  });
+
+  test('"Sign up" link navigates correctly', () => {
+    render(<LoginForm />);
+    const signUpLink = screen.getByRole('link', { name: /sign up/i });
+    expect(signUpLink).toHaveAttribute('href', '#');
+  });
+
+  test('Form submission with valid credentials', async () => {
+    const handleSubmit = vi.fn((e) => e.preventDefault());
+    render(<LoginForm onSubmit={handleSubmit} />);
+
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const loginButton = screen.getByRole('button', { name: /^Login$/i }); // Fixed: More specific query
+
+    await userEvent.type(emailInput, 'test@example.com');
+    await userEvent.type(passwordInput, 'password123');
+    await userEvent.click(loginButton);
+
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  test('Form submission with empty fields (required validation)', async () => {
+    const handleSubmit = vi.fn((e) => e.preventDefault());
+    render(<LoginForm onSubmit={handleSubmit} />);
+
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const loginButton = screen.getByRole('button', { name: /^Login$/i }); // Fixed: More specific query
+
+    expect(emailInput).toBeRequired();
+    expect(passwordInput).toBeRequired();
+
+    await userEvent.click(loginButton);
+
+    expect(handleSubmit).not.toHaveBeenCalled();
+  });
+});
+</file>
+
+<file path="app/components/__tests__/navbar.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import Navbar from '../navbar';
+import { expect, test, describe, vi } from 'vitest';
+import { MemoryRouter } from 'react-router';
+
+const mockNavigate = vi.fn();
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+    Link: vi.fn(({ to, children, ...rest }) => <a href={to} {...rest}>{children}</a>),
+  };
+});
+
+describe('Navbar', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('Renders logo and main navigation links for desktop', () => {
+    render(<Navbar />, { wrapper: MemoryRouter });
+    expect(screen.getByText('ExamGuard')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /sobre/i })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: /upload vídeo/i })).toHaveAttribute('href', '/upload-video');
+    expect(screen.getByRole('link', { name: /upload streaming/i })).toHaveAttribute('href', '/upload-streaming');
+  });
+
+  test('Renders "Entrar" and "Cadastro" buttons for desktop', () => {
+    render(<Navbar />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('button', { name: /entrar/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cadastro/i })).toBeInTheDocument();
+  });
+
+  test('Mobile menu toggle functionality', async () => {
+    render(<Navbar />, { wrapper: MemoryRouter });
+    const menuButton = screen.getByRole('button', { name: /open navigation menu/i });
+    expect(menuButton).toBeInTheDocument();
+    await userEvent.click(menuButton);
+    expect(screen.getByRole('button', { name: /close navigation menu/i })).toBeInTheDocument();
+    await userEvent.click(menuButton);
+    expect(screen.getByRole('button', { name: /open navigation menu/i })).toBeInTheDocument();
+  });
+
+  test('Navigation using "Entrar" button triggers `useNavigate`', async () => {
+    render(<Navbar />, { wrapper: MemoryRouter });
+    const loginButton = screen.getByRole('button', { name: /entrar/i });
+    await userEvent.click(loginButton);
+    expect(mockNavigate).toHaveBeenCalledWith('/login');
+  });
+});
+</file>
+
+<file path="app/components/login-form.tsx">
+import { cn } from "~/lib/utils"
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
+import type { AuthState } from "~/pages/login"
+
+interface LoginFormProps extends React.ComponentProps<"form"> {
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState>>
+}
+
+export function LoginForm({
+  className,
+  setAuthState,
+  ...props
+}: LoginFormProps) {
+  return (
+    <form className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <p className="text-muted-foreground text-sm text-balance">
+          Enter your email below to login to your account
+        </p>
+      </div>
+      <div className="grid gap-6">
+        <div className="grid gap-3">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" placeholder="m@example.com" required />
+        </div>
+        <div className="grid gap-3">
+          <div className="flex items-center">
+            <Label htmlFor="password">Password</Label>
+            <a
+              href="#"
+              className="ml-auto text-sm underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </a>
+          </div>
+          <Input id="password" type="password" required />
+        </div>
+        <Button type="submit" className="w-full hover:bg-[#131fa8] cursor-pointer">
+          Login
+        </Button>
+        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          <span className="bg-background text-muted-foreground relative z-10 px-2">
+            Or continue with
+          </span>
+        </div>
+        <Button variant="outline" className="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              fill="currentColor"
+            />
+          </svg>
+          Login with GitHub
+        </Button>
+      </div>
+      <div className="text-center text-sm">
+        Don&apos;t have an account?{" "}
+        <button onClick={() => setAuthState({ state: "register" })} className="underline underline-offset-4 cursor-pointer">
+          Sign up
+        </button>
+      </div>
+    </form>
+  )
+}
+</file>
+
+<file path="app/components/ui/__tests__/button.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Button } from '../button';
+import { expect, test, describe, vi } from 'vitest';
+
+describe('Button', () => {
+  test('renders with default variant and size', () => {
+    render(<Button>Click Me</Button>);
+    const button = screen.getByRole('button', { name: /click me/i });
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveClass('bg-primary');
+    expect(button).toHaveClass('h-9 px-4 py-2');
+  });
+
+  test('renders with different variant props (e.g., outline, destructive)', () => {
+    render(<Button variant="outline">Outline</Button>);
+    const outlineButton = screen.getByRole('button', { name: /outline/i });
+    expect(outlineButton).toHaveClass('border bg-background');
+    expect(outlineButton).not.toHaveClass('bg-primary');
+
+    render(<Button variant="destructive">Destructive</Button>);
+    const destructiveButton = screen.getByRole('button', { name: /destructive/i });
+    expect(destructiveButton).toHaveClass('bg-destructive text-white');
+  });
+
+  test('renders with different size props (e.g., sm, lg, icon)', () => {
+    render(<Button size="sm">Small</Button>);
+    const smButton = screen.getByRole('button', { name: /small/i });
+    expect(smButton).toHaveClass('h-8 rounded-md gap-1.5 px-3');
+
+    render(<Button size="lg">Large</Button>);
+    const lgButton = screen.getByRole('button', { name: /large/i });
+    expect(lgButton).toHaveClass('h-10 rounded-md px-6');
+
+    render(<Button size="icon">Icon</Button>);
+    const iconButton = screen.getByRole('button', { name: /icon/i });
+    expect(iconButton).toHaveClass('size-9');
+  });
+
+  test('renders with asChild prop', () => {
+    render(<Button asChild><a href="/test">Link</a></Button>);
+    const link = screen.getByRole('link', { name: /link/i });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', '/test');
+    expect(link).toHaveAttribute('data-slot', 'button');
+  });
+
+  test('renders with an SVG icon', () => {
+    render(<Button><svg data-testid="test-icon" /></Button>);
+    const button = screen.getByRole('button');
+    const svg = screen.getByTestId('test-icon');
+    expect(button).toContainElement(svg);
+  });
+
+  test('button is disabled', async () => {
+    const handleClick = vi.fn();
+    render(<Button disabled onClick={handleClick}>Disabled</Button>);
+    const button = screen.getByRole('button', { name: /disabled/i });
+    expect(button).toBeDisabled();
+    expect(button).toHaveClass('disabled:pointer-events-none disabled:opacity-50');
+
+    await userEvent.click(button);
+    expect(handleClick).not.toHaveBeenCalled();
+  });
+});
+</file>
+
+<file path="app/components/ui/__tests__/card.test.tsx">
+import { render, screen } from '@testing-library/react';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardAction,
+  CardContent,
+  CardFooter,
+} from '../card';
+import { expect, test, describe } from 'vitest';
+
+describe('Card and Sub-components', () => {
+  test('Card renders with children', () => {
+    render(<Card><p>Card Content</p></Card>);
+    const card = screen.getByText('Card Content').closest('[data-slot="card"]');
+    expect(card).toBeInTheDocument();
+    expect(card).toHaveClass('bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm');
+    expect(screen.getByText('Card Content')).toBeInTheDocument();
+  });
+
+  test('Each sub-component renders with its specific role and content', () => {
+    render(
+      <Card>
+        <CardHeader>
+          <CardTitle>My Card Title</CardTitle>
+          <CardDescription>This is a description.</CardDescription>
+          <CardAction><button>Action</button></CardAction>
+        </CardHeader>
+        <CardContent>
+          <p>Main content here.</p>
+        </CardContent>
+        <CardFooter>
+          <span>Footer info</span>
+        </CardFooter>
+      </Card>
+    );
+
+    const title = screen.getByText('My Card Title');
+    expect(title).toBeInTheDocument();
+    expect(title).toHaveClass('leading-none font-semibold');
+    expect(title).toHaveAttribute('data-slot', 'card-title');
+
+    const description = screen.getByText('This is a description.');
+    expect(description).toBeInTheDocument();
+    expect(description).toHaveClass('text-muted-foreground text-sm');
+    expect(description).toHaveAttribute('data-slot', 'card-description');
+
+    const actionButton = screen.getByRole('button', { name: /action/i });
+    expect(actionButton).toBeInTheDocument();
+    expect(actionButton.parentElement).toHaveAttribute('data-slot', 'card-action');
+
+    const content = screen.getByText('Main content here.').closest('[data-slot="card-content"]');
+    expect(content).toBeInTheDocument();
+    expect(content).toHaveClass('px-6');
+
+    const footer = screen.getByText('Footer info').closest('[data-slot="card-footer"]');
+    expect(footer).toBeInTheDocument();
+    expect(footer).toHaveClass('flex items-center px-6 [.border-t]:pt-6');
+  });
+
+  test('CardAction positions itself correctly', () => {
+    render(
+      <Card>
+        <CardHeader>
+          <CardAction data-testid="card-action-element"><button>Action</button></CardAction>
+        </CardHeader>
+      </Card>
+    );
+    const cardAction = screen.getByTestId('card-action-element');
+    expect(cardAction).toHaveClass('col-start-2 row-span-2 row-start-1 self-start justify-self-end');
+  });
+});
+</file>
+
+<file path="app/components/ui/__tests__/input.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Input } from '../input';
+import { expect, test, describe, vi } from 'vitest';
+
+describe('Input', () => {
+  test('renders with default props', () => {
+    render(<Input />);
+    const input = screen.getByRole('textbox');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('type', 'text'); // Default type
+    expect(input).toHaveClass('h-9 w-full min-w-0 rounded-md border');
+  });
+
+  test('renders with placeholder and value', () => {
+    render(<Input placeholder="Enter text" defaultValue="Test Value" />);
+    const input = screen.getByPlaceholderText('Enter text');
+    expect(input).toHaveValue('Test Value');
+  });
+
+  test('handles user input (change event)', async () => {
+    const handleChange = vi.fn();
+    render(<Input onChange={handleChange} />);
+    const input = screen.getByRole('textbox');
+    await userEvent.type(input, 'hello');
+    expect(handleChange).toHaveBeenCalledTimes(5);
+    expect(input).toHaveValue('hello');
+  });
+
+  test('renders with aria-invalid attribute', () => {
+    render(<Input aria-invalid="true" />);
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveClass('aria-invalid:border-destructive');
+  });
+
+  test('renders as disabled', () => {
+    render(<Input disabled />);
+    const input = screen.getByRole('textbox');
+    expect(input).toBeDisabled();
+  });
+
+  test('renders with custom type', () => {
+    render(<Input type="email" />);
+    const input = screen.getByRole('textbox'); // input de email ainda eh textbox :P
+    expect(input).toHaveAttribute('type', 'email');
+  });
+});
+</file>
+
+<file path="app/components/ui/__tests__/label.test.tsx">
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Label } from '../label';
+import { Input } from '../input'; 
+import { expect, test, describe } from 'vitest';
+
+describe('Label', () => {
+  test('renders with text content', () => {
+    render(<Label>My Label</Label>);
+    const label = screen.getByText('My Label');
+    expect(label).toBeInTheDocument();
+    expect(label).toHaveClass('text-sm leading-none font-medium');
+  });
+
+  test('associates with an input using htmlFor', async () => {
+    render(
+      <>
+        <Label htmlFor="my-input">Input Label</Label>
+        <Input id="my-input" />
+      </>
+    );
+    const label = screen.getByText('Input Label');
+    const input = screen.getByLabelText('Input Label'); 
+    expect(label).toHaveAttribute('for', 'my-input');
+    expect(input).toBeInTheDocument();
+
+    await userEvent.click(label);
+    expect(input).toHaveFocus();
+  });
+
+  test('renders when a peer input is disabled', () => {
+    render(
+      <div data-group data-disabled="true">
+        <Label>Disabled Label</Label>
+      </div>
+    );
+    const label = screen.getByText('Disabled Label');
+    // a classe 'peer-disabled' depende de 'peer' estar desabilitado :P
+    expect(label).toHaveClass('group-data-[disabled=true]:opacity-50');
+  });
+});
+</file>
+
+<file path="app/layouts/__tests__/layout.test.tsx">
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router'; 
+import Layout from '../layout';
+import { expect, test, describe, vi } from 'vitest';
+
+vi.mock('../../components/navbar', () => ({ 
+  default: () => <nav data-testid="mock-navbar">Mock Navbar</nav>,
+}));
+
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
+  return {
+    ...actual,
+    Outlet: () => <div data-testid="mock-outlet">Mock Outlet Content</div>,
+  };
+});
+
+describe('Layout', () => {
+  test('Root layout renders Navbar and Outlet', () => {
+    render(<Layout />, { wrapper: MemoryRouter });
+
+    expect(screen.getByTestId('mock-navbar')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-outlet')).toBeInTheDocument();
+
+    const layoutDiv = screen.getByTestId('mock-navbar').parentElement;
+    expect(layoutDiv).toHaveClass('min-h-screen flex flex-col');
+  });
+});
+</file>
+
+<file path="app/layouts/layout.tsx">
+import { Outlet } from 'react-router';
+import Navbar from '../components/navbar';
+
+export default function Layout() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <Outlet />
+    </div>
+  );
+}
+</file>
+
+<file path="app/routes/upload-streaming.tsx">
+import { useState, useRef, useEffect } from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Video, Square, Trash2, Upload } from "lucide-react";
+
+function UploadStreaming() {
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 1280, height: 720 },
+        audio: true
+      });
+
+      streamRef.current = stream;
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm;codecs=vp8,opus'
+      });
+
+      const chunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+          setRecordedChunks(prev => [...prev, event.data]);
+          // Envio em tempo real para o backend
+          sendChunkToBackend(event.data, chunks.length);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        setRecordedUrl(URL.createObjectURL(blob));
+        
+        // Para o stream da câmera
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start(2000); // Gera chunks a cada 2 segundos
+      setIsRecording(true);
+      setRecordedChunks([]);
+    } catch (error) {
+      console.error("Erro ao acessar câmera:", error);
+      alert("Não foi possível acessar a câmera. Verifique as permissões.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
+
+  const sendChunkToBackend = async (chunk: Blob, chunkIndex: number) => {
+    try {
+      console.log(`📤 Enviando chunk ${chunkIndex} para backend:`, chunk.size, "bytes");
+      
+      // Simulação de envio
+      // Descomente e adapte para seu backend real:
+      /*
+      const formData = new FormData();
+      formData.append('chunk', chunk);
+      formData.append('chunkIndex', chunkIndex.toString());
+      formData.append('timestamp', Date.now().toString());
+      
+      const response = await fetch('https://seu-backend.com/api/upload-chunk', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        console.error('Erro ao enviar chunk:', chunkIndex);
+      }
+      */
+    } catch (error) {
+      console.error('Erro no envio do chunk:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setRecordedChunks([]);
+    setRecordedUrl(null);
+    setUploadProgress(0);
+    
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+  };
+
+  const handleFinalUpload = async () => {
+    if (recordedChunks.length === 0) return;
+
+    setIsUploading(true);
+    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+    
+    try {
+      console.log("🚀 Fazendo upload final do vídeo completo:", blob.size, "bytes");
+
+      // Simulação de progresso
+      for (let i = 0; i <= 100; i += 10) {
+        setUploadProgress(i);
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
+      // Upload real:
+      /*
+      const formData = new FormData();
+      formData.append('video', blob, 'aula.webm');
+      formData.append('totalChunks', recordedChunks.length.toString());
+      
+      const xhr = new XMLHttpRequest();
+      
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const progress = (e.loaded / e.total) * 100;
+          setUploadProgress(Math.round(progress));
+        }
+      });
+      
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          alert("Vídeo enviado com sucesso! ✅");
+          handleCancel();
+        }
+      });
+      
+      xhr.open('POST', 'https://seu-backend.com/api/finalize-upload');
+      xhr.send(formData);
+      */
+      
+      alert("Vídeo enviado com sucesso! ✅");
+      handleCancel();
+    } catch (error) {
+      console.error('Erro no upload final:', error);
+      alert('Erro ao enviar o vídeo. Tente novamente.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (recordedUrl) {
+        URL.revokeObjectURL(recordedUrl);
+      }
+    };
+  }, [recordedUrl]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Card className="w-full max-w-3xl shadow-2xl rounded-3xl overflow-hidden">
+        <CardContent className="space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-bold text-gray-800">Gravar Aula</h2>
+            <p className="text-gray-600">
+              {isRecording && "🔴 Gravando e enviando para o servidor..."}
+              {!isRecording && !recordedUrl && "Clique para iniciar a gravação da sua aula"}
+              {recordedUrl && "Gravação finalizada! Revise e envie"}
+            </p>
+          </div>
+
+          {/* Video Preview */}
+          <div className="relative bg-black rounded-2xl overflow-hidden aspect-video shadow-lg">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+              controls={recordedUrl ? true : false}
+              className="w-full h-full object-cover"
+              src={recordedUrl || undefined}
+            />
+            
+            {!isRecording && !recordedUrl && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+                <div className="text-center space-y-4">
+                  <Video data-testid="video-icon" className="w-20 h-20 text-gray-500 mx-auto" />
+                  <p className="text-gray-400 text-sm">Câmera desligada</p>
+                </div>
+              </div>
+            )}
+
+            {isRecording && (
+              <div data-testid="recording-indicator" className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                <span className="w-3 h-3 bg-white rounded-full animate-pulse"></span>
+                GRAVANDO
+              </div>
+            )}
+
+            {recordedChunks.length > 0 && isRecording && (
+              <div className="absolute bottom-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg text-xs backdrop-blur">
+                📦 {recordedChunks.length} chunks enviados
+              </div>
+            )}
+          </div>
+
+          {/* Upload Progress */}
+          {isUploading && (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Enviando vídeo final...</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div
+                  role="progressbar"
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-300 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Stats */}
+          {recordedChunks.length > 0 && !isRecording && (
+            <div className="grid grid-cols-2 gap-4 p-4 bg-blue-50 rounded-xl">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">{recordedChunks.length}</p>
+                <p className="text-xs text-gray-600">Chunks gravados</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">
+                  {(recordedChunks.reduce((acc, chunk) => acc + chunk.size, 0) / 1024 / 1024).toFixed(2)} MB
+                </p>
+                <p className="text-xs text-gray-600">Tamanho total</p>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 justify-center flex-wrap">
+            {!isRecording && !recordedUrl && (
+              <Button
+                size="lg"
+                onClick={startRecording}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg px-8 py-6 text-lg"
+              >
+                <Video className="w-6 h-6 mr-2" />
+                Iniciar Gravação
+              </Button>
+            )}
+
+            {isRecording && (
+              <Button
+                size="lg"
+                onClick={stopRecording}
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg px-8 py-6 text-lg"
+              >
+                <Square className="w-6 h-6 mr-2" />
+                Parar Gravação
+              </Button>
+            )}
+
+            {recordedUrl && !isUploading && (
+              <>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="border-2 border-gray-300 hover:bg-gray-100 px-6 py-6"
+                >
+                  <Trash2 className="w-5 h-5 mr-2" />
+                  Descartar
+                </Button>
+                <Button
+                  size="lg"
+                  onClick={handleFinalUpload}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg px-8 py-6 text-lg"
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  Enviar Vídeo
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Info Box */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 text-sm text-gray-700">
+            <p className="font-semibold mb-1">💡 Como funciona:</p>
+            <ul className="space-y-1 text-xs">
+              <li>• A gravação é enviada em chunks de 2 segundos para o servidor</li>
+              <li>• Você pode gravar aulas longas sem preocupação</li>
+              <li>• O vídeo final pode ser processado por IA após o envio</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default UploadStreaming;
+</file>
+
+<file path="foo.txt">
+foo
+</file>
+
+<file path="vitest.setup.ts">
+import '@testing-library/jest-dom/vitest';
+</file>
+
+<file path="app/components/navbar.tsx">
+import { motion } from "framer-motion";
+import { Crosshair, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { Button } from "./ui/button";
+
+function Navbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  return (
+    <header className="border-b sticky top-0 bg-white z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
+        <a href="#" className="flex items-center gap-2 font-medium">
+            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+              <Crosshair className="size-4" />
+            </div>
+            ExamGuard
+          </a>
+
+        <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
+          <Link to="/" className="hover:text-gray-600">
+            Sobre
+          </Link>
+          <Link to="/upload-video" className="hover:text-gray-600">
+            Upload Vídeo
+          </Link>
+          <Link to="/upload-streaming" className="hover:text-gray-600">
+            Upload Streaming
+          </Link>
+        </nav>
+
+        <div className="hidden md:flex gap-2">
+          <Button variant="outline" onClick={() => navigate("/login")}>
+            Entrar
+          </Button>
+          <Button>Cadastro</Button>
+        </div>
+
+        <button
+          className="md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+        >
+          {mobileMenuOpen ? <X /> : <Menu />}
+        </button>
+      </div>
+
+      {mobileMenuOpen && (
+        <motion.nav
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="md:hidden flex flex-col items-center gap-4 py-4 border-t bg-white"
+        >
+          <Link to="/" className="hover:text-gray-600">
+            Sobre
+          </Link>
+          <Link to="/upload-video" className="hover:text-gray-600">
+            Upload Vídeo
+          </Link>
+          <Link to="/upload-streaming" className="hover:text-gray-600">
+            Upload Streaming
+          </Link>
+          <div className="flex gap-2">
+            <Button variant="outline">Entrar</Button>
+            <Button>Cadastro</Button>
+          </div>
+        </motion.nav>
+      )}
+    </header>
+  );
+}
+
+export default Navbar;
+</file>
+
+<file path="app/components/ui/input.tsx">
+import * as React from "react"
+
+import { cn } from "~/lib/utils"
+
+function Input({ className, type = "text", ...props }: React.ComponentProps<"input">) {
+  return (
+    <input
+      type={type}
+      data-slot="input"
+      className={cn(
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Input }
+</file>
+
+<file path="app/lib/__tests__/utils.test.ts">
+import { cn } from '../utils';
+import { expect, test, describe } from 'vitest';
+
+describe('cn function', () => {
+  test('Combines multiple class strings', () => {
+    expect(cn('class1', 'class2')).toBe('class1 class2');
+  });
+
+  test('Handles conditional classes (objects)', () => {
+    expect(cn('class1', { 'class2': true, 'class3': false })).toBe('class1 class2');
+  });
+
+  test('Filters out falsy values', () => {
+    expect(cn('class1', null, undefined, '', 0, false, 'class2')).toBe('class1 class2');
+  });
+
+  test('Merges Tailwind CSS classes correctly', () => {
+    expect(cn('p-4 px-2')).toBe('p-4 px-2');
+    expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
+  });
+
+  test('Handles empty inputs', () => {
+    expect(cn()).toBe('');
+  });
+});
+</file>
+
+<file path="vite.config.ts">
+import { reactRouter } from "@react-router/dev/vite";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+    !process.env.VITEST && reactRouter(),
+    tsconfigPaths()
+  ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './vitest.setup.ts',
+    include: ['app/**/*.test.{ts,tsx}'], 
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'app/app.css',
+        'app/routes.ts',
+        'react-router.config.ts',
+        '**/*.d.ts',
+        '**/node_modules/**',
+        '**/__tests__/**', 
+        'app/root.tsx',
+        'app/main.tsx',
+        'app/entry.client.tsx',
+        'app/entry.server.tsx',
+        'app/+types/**',
+        'components.json',
+        'vite.config.ts',
+        'vitest.setup.ts'
+      ],
+    },
+  },
+});
+</file>
+
+<file path="app/routes/home.tsx">
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+} from "../components/ui/card"
+import { Button } from "../components/ui/button";
+import { useNavigate } from "react-router";
+
+export default function Home() {
+  const navigate = useNavigate();
+  
+  return (
+    <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-16">
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-5xl font-bold mb-4"
+      >
+        ExamGuard
+      </motion.h1>
+      <p className="text-lg text-gray-600 mb-8">
+        Assistente Computacional Anti-trapaça para garantir provas seguras.
+      </p>
+      <div className="flex gap-4">
+        <Button variant="outline" onClick={() => navigate("/login")}>Entrar</Button>
+        <Button>Cadastro</Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 max-w-4xl w-full">
+        <Card className="shadow-lg rounded-2xl">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Monitoramento em tempo real
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Detecte comportamentos suspeitos durante avaliações online.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg rounded-2xl">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Relatórios inteligentes
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Geração automática de insights sobre possíveis tentativas de
+              fraude.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="app/routes.ts">
+import {
+  type RouteConfig,
+  index,
+  layout,
+  route,
+} from "@react-router/dev/routes";
+
+export default [
+  route("login", "pages/login.tsx"),
+  layout("layouts/layout.tsx", [
+    index("pages/home.tsx"),
+    route("upload-video", "pages/upload-video.tsx"),
+    route("upload-streaming", "pages/upload-streaming.tsx"),
+  ]),
+] satisfies RouteConfig;
+</file>
+
+<file path="package.json">
+{
+  "name": "examguard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@react-router/node": "^7.7.1",
+    "@react-router/serve": "^7.7.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.22",
+    "isbot": "^5.1.27",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.7.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^7.7.1",
+    "@tailwindcss/vite": "^4.1.4",
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^20",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitest/coverage-v8": "^2.0.4",
+    "jsdom": "^24.1.1",
+    "tailwindcss": "^4.1.4",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^2.0.4"
+  }
+}
+</file>
+
+</files>
