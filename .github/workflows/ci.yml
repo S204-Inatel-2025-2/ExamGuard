@@ -2,9 +2,9 @@ name: Continuous Integration
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "develop", "backup"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "develop", "backup"]
 
 jobs:
   build-and-test:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js environment
+      - name: Configurar ambiente
         uses: actions/setup-node@v4
         with:
           node-version: 20

@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UploadStreaming from '../upload-streaming';
-import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest';
+import { expect, test, describe, vi, beforeEach } from 'vitest';
 
 const mockMediaStreamTrack = { stop: vi.fn() };
 const mockMediaStream = { getTracks: () => [mockMediaStreamTrack] };
@@ -52,7 +52,9 @@ describe('UploadStreaming', () => {
     render(<UploadStreaming />);
     await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
     await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
-    mockMediaRecorderInstance.onstop(); // Manually trigger onstop
+    act(() => {
+        mockMediaRecorderInstance.onstop();
+    });
     await waitFor(() => {
       expect(mockMediaRecorderInstance.stop).toHaveBeenCalled();
       expect(screen.getByText(/gravação finalizada! revise e envie/i)).toBeInTheDocument();
@@ -63,7 +65,9 @@ describe('UploadStreaming', () => {
     render(<UploadStreaming />);
     await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
     await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
-    mockMediaRecorderInstance.onstop();
+    act(() => {
+        mockMediaRecorderInstance.onstop();
+    });
     await userEvent.click(await screen.findByRole('button', { name: /descartar/i }));
     expect(screen.getByText(/câmera desligada/i)).toBeInTheDocument();
   });
@@ -72,11 +76,14 @@ describe('UploadStreaming', () => {
     render(<UploadStreaming />);
     await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
 
-    // Simulate getting a chunk of data
-    mockMediaRecorderInstance.ondataavailable({ data: new Blob(['chunk1']) });
+    act(() => {
+        mockMediaRecorderInstance.ondataavailable({ data: new Blob(['chunk1']) });
+    });
 
     await userEvent.click(screen.getByRole('button', { name: /parar gravação/i }));
-    mockMediaRecorderInstance.onstop();
+    act(() => {
+        mockMediaRecorderInstance.onstop();
+    });
 
     await userEvent.click(await screen.findByRole('button', { name: /enviar vídeo/i }));
 

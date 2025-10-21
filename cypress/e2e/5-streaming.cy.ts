@@ -34,7 +34,6 @@ describe('Streaming Video Tests', () => {
 
   describe('Recording Flow', () => {
     beforeEach(() => {
-      // Mock successful getUserMedia
       cy.window().then((win) => {
         cy.stub(win.navigator.mediaDevices, 'getUserMedia')
           .resolves(new MediaStream())
