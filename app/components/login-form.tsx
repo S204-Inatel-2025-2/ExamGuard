@@ -28,7 +28,7 @@ export function LoginForm({
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" placeholder="m@example.com" required />
-          {actionData?.error && <p className="text-red-500">{actionData.error}</p>}
+          {actionData?.error && <p className="text-red-500">{actionData.error.message}</p>}
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">

@@ -4,7 +4,6 @@ import { Card, CardAction, CardContent } from "../components/ui/card";
 import { X } from "lucide-react";
 
 // URL Flask
-const API_URL = "http://localhost:5000";
 function UploadVideo() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -61,7 +60,7 @@ function UploadVideo() {
   const pollTaskStatus = (taskId: string) => {
     pollIntervalRef.current = window.setInterval(async () => {
       try {
-        const response = await fetch(`${API_URL}/api/status/${taskId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/status/${taskId}`);
         if (!response.ok) {
            throw new Error("Erro ao consultar o status da tarefa.");
         }
@@ -115,7 +114,7 @@ function UploadVideo() {
 
     try {
       // Envia o arquivo para a rota de upload (POST)
-      const response = await fetch(`${API_URL}/upload-video`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/upload-video`, {
         method: "POST",
         body: formData,
       });

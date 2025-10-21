@@ -39,7 +39,7 @@ export async function action({ request }: { request: Request }) {
     return {
       error: {
         status,
-        message,
+        message: String(message),
       },
     };
   }
@@ -61,7 +61,7 @@ export default function LoginPage() {
       toast.success('Registered successfully!');
     }
     if(actionData?.error) {
-      toast.error(actionData.error.message);
+      toast.error(JSON.stringify(actionData.error.message) ?? "Unknown error");
     }
   }, [actionData]);
 

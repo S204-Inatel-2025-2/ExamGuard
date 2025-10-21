@@ -15,24 +15,26 @@ function Navbar() {
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <Crosshair className="size-4" />
             </div>
-            ExamGuard
+            <Link to="/dashboard" className="p-0 hover:bg-transparent hover:underline">
+              ExamGuard
+            </Link>
           </a>
 
         <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
-          <Link to="/upload-video" className="hover:text-gray-600">
+          <Link to="dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
-          <Link to="/upload-streaming" className="hover:text-gray-600">
+          <Link to="dashboard/upload-streaming" className="hover:text-gray-600">
             Upload Streaming
           </Link>
         </nav>
 
-        <div className="hidden md:flex gap-2">
-          <Button variant="outline" onClick={() => navigate("/login")}>
+        {/* <div className="hidden md:flex gap-2"> */}
+          {/* <Button variant="outline" className="display-" onClick={() => navigate("/login")}>
             Entrar
           </Button>
-          <Button>Cadastro</Button>
-        </div>
+          <Button className="display-none">Cadastro</Button> */}
+        {/* </div> */}
 
         <button
           className="md:hidden"
@@ -56,8 +58,8 @@ function Navbar() {
             Upload Streaming
           </Link>
           <div className="flex gap-2">
-            <Button variant="outline">Entrar</Button>
-            <Button>Cadastro</Button>
+            {/* <Button variant="outline">Entrar</Button> */}
+            {/* <Button>Cadastro</Button> */}
           </div>
         </motion.nav>
       )}
