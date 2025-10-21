@@ -8,3 +8,6 @@
 .env
 
 repomix-output.xml
+coverage
+html
+test-report
