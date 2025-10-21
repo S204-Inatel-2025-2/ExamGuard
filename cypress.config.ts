@@ -2,17 +2,20 @@ import { defineConfig } from 'cypress'
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://localhost:5173',
     setupNodeEvents(on, config) {
-      // implement node event listeners here
     },
-    reporter: 'mochawesome',
-    reporterOptions: {
-      reportDir: 'cypress/reports/html',
-      overwrite: false,
-      html: true,
-      json: true
-    }
+  },
+  reporter: 'mochawesome',
+  reporterOptions: {
+    reportDir: 'cypress/reports',
+    overwrite: false,
+    html: true,
+    json: true,
+    charts: true,
+    reportPageTitle: 'Relatório de testes E2E',
+    embeddedScreenshots: true,
+    inlineAssets: true
   },
   viewportWidth: 1280,
   viewportHeight: 720,
