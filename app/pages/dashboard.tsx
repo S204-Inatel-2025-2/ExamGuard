@@ -19,7 +19,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 // Mock data
 const mockVideos = [
@@ -197,7 +197,9 @@ export default function DashboardHome() {
                     filteredVideos.map((video) => (
                       <TableRow key={video.id}>
                         <TableCell className="font-medium">
-                          {video.nome}
+                          <Link to={`/dashboard/video/${video.id}`} className="hover:underline">
+                            {video.nome}
+                          </Link>
                         </TableCell>
                         <TableCell>{video.dataEnvio}</TableCell>
                         <TableCell>{getStatusBadge(video.status)}</TableCell>
@@ -222,9 +224,9 @@ export default function DashboardHome() {
                     <CardContent className="p-4">
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-2">
-                          <p className="font-medium text-sm break-all">
+                          <Link to={`/dashboard/video/${video.id}`} className="font-medium text-sm break-all">
                             {video.nome}
-                          </p>
+                          </Link>
                           {getStatusBadge(video.status)}
                         </div>
                         <p className="text-sm text-muted-foreground">

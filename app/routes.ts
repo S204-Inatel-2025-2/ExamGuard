@@ -16,5 +16,6 @@ export default [
     route("dashboard", "pages/dashboard.tsx"),
     route("dashboard/upload-video", "pages/upload-video.tsx"),
     route("dashboard/upload-streaming", "pages/upload-streaming.tsx"),
+    route("dashboard/video/:id", "pages/record.tsx"),
   ]),
 ] satisfies RouteConfig;
