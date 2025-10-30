@@ -27,17 +27,18 @@ function Navbar() {
           </Link>
         </nav>
 
-        {isMounted && (
-          <button
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        )}
+       <div className="md:hidden">
+          {isMounted && (
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          )}
+        </div>
       </div>
-
+ 
       {isMounted && mobileMenuOpen && (
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
