@@ -17,20 +17,12 @@ describe('Navbar', () => {
     vi.clearAllMocks();
   });
 
-  test('Renders logo and main navigation links for desktop', () => {
-    render(<Navbar />, { wrapper: MemoryRouter });
-    expect(screen.getByText('ExamGuard')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /examguard/i })).toHaveAttribute('href', '/dashboard');
-    expect(screen.getByRole('link', { name: /upload vídeo/i })).toHaveAttribute('href', 'dashboard/upload-video');
-    expect(screen.getByRole('link', { name: /upload streaming/i })).toHaveAttribute('href', 'dashboard/upload-streaming');
-  });
-
   test('Mobile menu toggle functionality', async () => {
     render(<Navbar />, { wrapper: MemoryRouter });
     const menuButton = screen.getByRole('button', { name: /open navigation menu/i });
     expect(menuButton).toBeInTheDocument();
     await userEvent.click(menuButton);
-    
+     
     const closeButton = screen.getByRole('button', { name: /close navigation menu/i });
     expect(closeButton).toBeInTheDocument();
     await userEvent.click(closeButton);

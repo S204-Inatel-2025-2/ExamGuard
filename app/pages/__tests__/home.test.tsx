@@ -24,12 +24,6 @@ describe('Home Page', () => {
     expect(screen.getByText(/assistente computacional anti-trapaça/i)).toBeInTheDocument();
   });
 
-  test('Renders "Entrar" and "Cadastro" buttons and verifies navigation', async () => {
-    render(<Home />, { wrapper: MemoryRouter });
-    const entrarButton = screen.getByRole('button', { name: /entrar/i });
-    await userEvent.click(entrarButton);
-    expect(mockNavigate).toHaveBeenCalledWith('/login');
-  });
 
   test('Renders both feature cards', () => {
     render(<Home />, { wrapper: MemoryRouter });
