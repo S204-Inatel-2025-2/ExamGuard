@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { Crosshair, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useMounted } from "~/hooks/use-mounted";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMounted = useMounted();
 
   return (
     <header className="border-b sticky top-0 bg-white z-50">
@@ -17,33 +19,36 @@ function Navbar() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
-          <Link to="dashboard/upload-video" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
-          <Link to="dashboard/upload-streaming" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-streaming" className="hover:text-gray-600">
             Upload Streaming
           </Link>
         </nav>
 
-        <button
-          className="md:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
+       <div className="md:hidden">
+          {isMounted && (
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          )}
+        </div>
       </div>
-
-      {mobileMenuOpen && (
+ 
+      {isMounted && mobileMenuOpen && (
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden flex flex-col items-center gap-4 py-4 border-t bg-white"
         >
-          <Link to="/upload-video" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-video" className="hover:text-gray-600" onClick={() => setMobileMenuOpen(false)}>
             Upload Vídeo
           </Link>
-          <Link to="/upload-streaming" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-streaming" className="hover:text-gray-600" onClick={() => setMobileMenuOpen(false)}>
             Upload Streaming
           </Link>
           <div className="flex gap-2">
