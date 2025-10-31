@@ -16,7 +16,7 @@ const config = {
     include: ['app/**/*.test.{ts,tsx}'], 
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json-summary', 'html'], 
       exclude: [
         '**/node_modules/**',
         '**/__tests__/**', 
