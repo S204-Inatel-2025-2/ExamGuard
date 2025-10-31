@@ -23,8 +23,8 @@ function copyDirectory(src, dest) {
 }
 
 function generateTestReport() {
-  let vitestCoverage = null;
-  const coveragePath = path.join(__dirname, '../coverage/coverage-final.json');
+  let vitestCoverage = null;  
+  const coveragePath = path.join(__dirname, '../coverage/coverage-summary.json'); 
   const cypressReports = path.join(__dirname, '../cypress/reports/html');
   
   const reportDir = path.join(__dirname, '../test-report');

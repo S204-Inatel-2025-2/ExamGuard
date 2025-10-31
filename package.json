@@ -9,7 +9,7 @@
     "typecheck": "react-router typegen && tsc",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest run --coverage --reporter json --reporter html",
+    "test:coverage": "vitest run --coverage --reporter json-summary --reporter html",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --reporter mochawesome",
     "cypress:report": "npx mochawesome-merge cypress/reports/*.json > mochawesome.json && npx marge mochawesome.json",
