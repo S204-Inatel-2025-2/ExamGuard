@@ -1,0 +1,477 @@
+{
+  "stats": {
+    "suites": 5,
+    "tests": 8,
+    "passes": 8,
+    "pending": 0,
+    "failures": 0,
+    "testsRegistered": 8,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false,
+    "start": "2025-10-31T00:46:42.320Z",
+    "end": "2025-10-31T00:47:41.564Z",
+    "duration": 59244
+  },
+  "results": [
+    {
+      "uuid": "b1b9fc9d-e915-48f0-9570-6eaf2f1faf85",
+      "title": "",
+      "fullFile": "cypress\\e2e\\2-home.cy.ts",
+      "file": "cypress\\e2e\\2-home.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "53feef44-cbb7-4f92-a613-8ade1cf225b2",
+          "title": "Home Page Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display all static content correctly",
+              "fullTitle": "Home Page Tests should display all static content correctly",
+              "timedOut": null,
+              "duration": 2981,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('h1', 'ExamGuard').should('be.visible');\ncy.contains('p', 'Assistente Computacional Anti-trapaça').should('be.visible');\ncy.contains('h3', 'Monitoramento em tempo real').should('be.visible');\ncy.contains('h3', 'Relatórios inteligentes').should('be.visible');",
+              "err": {},
+              "uuid": "b675f4a1-e512-4e44-b055-7943872f5511",
+              "parentUUID": "53feef44-cbb7-4f92-a613-8ade1cf225b2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should handle CTA buttons correctly",
+              "fullTitle": "Home Page Tests should handle CTA buttons correctly",
+              "timedOut": null,
+              "duration": 1867,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('a', 'Entrar').should('be.visible').click();\ncy.url().should('include', '/login');\ncy.contains('h1', 'Login to your account').should('be.visible');",
+              "err": {},
+              "uuid": "71a14f72-657b-47c4-bf46-76e721463a71",
+              "parentUUID": "53feef44-cbb7-4f92-a613-8ade1cf225b2",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "b675f4a1-e512-4e44-b055-7943872f5511",
+            "71a14f72-657b-47c4-bf46-76e721463a71"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 4848,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "501e4264-d9cc-4306-8d37-06b74ec8c804",
+      "title": "",
+      "fullFile": "cypress\\e2e\\3-authentication.cy.ts",
+      "file": "cypress\\e2e\\3-authentication.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "b52435fb-18e5-42f5-8aca-ed5c8bad4c73",
+          "title": "Authentication Flow Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "029204d3-1015-42d2-b966-eb13e43165cc",
+              "title": "Form Display and Toggle",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should display the login form by default",
+                  "fullTitle": "Authentication Flow Tests Form Display and Toggle should display the login form by default",
+                  "timedOut": null,
+                  "duration": 3156,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.contains('h1', 'Login to your account').should('be.visible');\ncy.contains('button', 'Login').should('be.visible');\ncy.get('input[name=\"name\"]').should('not.exist');",
+                  "err": {},
+                  "uuid": "541e7b89-6739-4501-9fdd-282a1ceef7b4",
+                  "parentUUID": "029204d3-1015-42d2-b966-eb13e43165cc",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [
+                {
+                  "uuid": "d2f4ef3e-e1b1-4670-b7b7-edf14a4e3ce8",
+                  "title": "Form Validation",
+                  "fullFile": "",
+                  "file": "",
+                  "beforeHooks": [],
+                  "afterHooks": [],
+                  "tests": [
+                    {
+                      "title": "should trigger browser validation for empty form submission",
+                      "fullTitle": "Authentication Flow Tests Form Display and Toggle Form Validation should trigger browser validation for empty form submission",
+                      "timedOut": null,
+                      "duration": 2554,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "cy.contains('button[type=\"submit\"]', 'Login').click();\ncy.url().should('include', '/login');\ncy.get('input[type=\"email\"]:invalid').should('have.length', 1);\ncy.get('input[type=\"email\"]').should('be.enabled').type('test@example.com');\ncy.contains('button[type=\"submit\"]', 'Login').click();\ncy.get('input[type=\"password\"]:invalid').should('have.length', 1);",
+                      "err": {},
+                      "uuid": "6c6d152b-85d4-424c-9aff-773a8d431f9c",
+                      "parentUUID": "d2f4ef3e-e1b1-4670-b7b7-edf14a4e3ce8",
+                      "isHook": false,
+                      "skipped": false
+                    }
+                  ],
+                  "suites": [],
+                  "passes": [
+                    "6c6d152b-85d4-424c-9aff-773a8d431f9c"
+                  ],
+                  "failures": [],
+                  "pending": [],
+                  "skipped": [],
+                  "duration": 2554,
+                  "root": false,
+                  "rootEmpty": false,
+                  "_timeout": 2000
+                }
+              ],
+              "passes": [
+                "541e7b89-6739-4501-9fdd-282a1ceef7b4"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3156,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "d198beec-52b0-48d9-9289-175e1b6cd1e8",
+      "title": "",
+      "fullFile": "cypress\\e2e\\4-video-upload.cy.ts",
+      "file": "cypress\\e2e\\4-video-upload.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "66655bc6-f60e-4253-9948-dc126a54c5a1",
+          "title": "Video Upload Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display initial upload page state",
+              "fullTitle": "Video Upload Tests should display initial upload page state",
+              "timedOut": null,
+              "duration": 2947,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('h2', 'Upload de Vídeo').should('be.visible');\ncy.get('[data-testid=\"upload-area\"]').should('be.visible');\ncy.contains('Clique para selecionar um vídeo').should('be.visible');\ncy.get('video').should('not.exist');\ncy.contains('button', 'Enviar Vídeo').should('be.disabled');",
+              "err": {},
+              "uuid": "2ac5a6e2-fa1f-4274-a516-9b6b2037983f",
+              "parentUUID": "66655bc6-f60e-4253-9948-dc126a54c5a1",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "2ac5a6e2-fa1f-4274-a516-9b6b2037983f"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2947,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "4a9527b8-e8e0-47ba-ba62-76a39047adaf",
+      "title": "",
+      "fullFile": "cypress\\e2e\\5-streaming.cy.ts",
+      "file": "cypress\\e2e\\5-streaming.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "264ee3da-5429-487b-80a6-50bfe6881307",
+          "title": "Streaming Video Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display initial streaming page state",
+              "fullTitle": "Streaming Video Tests should display initial streaming page state",
+              "timedOut": null,
+              "duration": 2765,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Gravar Aula').should('be.visible');\ncy.contains('Câmera desligada').should('be.visible');\ncy.contains('Iniciar Gravação').should('be.enabled');\ncy.contains('Parar Gravação').should('not.exist');",
+              "err": {},
+              "uuid": "6bc4d207-328c-430e-9561-2467eb614133",
+              "parentUUID": "264ee3da-5429-487b-80a6-50bfe6881307",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6bc4d207-328c-430e-9561-2467eb614133"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2765,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "0a701607-c887-4439-955b-675e4c87a6df",
+      "title": "",
+      "fullFile": "cypress\\e2e\\1-navigation-layout.cy.ts",
+      "file": "cypress\\e2e\\1-navigation-layout.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "5b132af6-07bb-439d-a6c7-119a5d2a2d1e",
+          "title": "Navigation and Layout Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "56c4758b-a4f5-4297-906c-8cb390283985",
+              "title": "Desktop Navigation (1280x720)",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should display all navigation elements correctly on the landing page",
+                  "fullTitle": "Navigation and Layout Tests Desktop Navigation (1280x720) should display all navigation elements correctly on the landing page",
+                  "timedOut": null,
+                  "duration": 3216,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('header').within(() => {\n    cy.contains('ExamGuard').should('be.visible');\n    cy.contains('a', 'Entrar').should('be.visible');\n    cy.contains('button', 'Cadastro').should('be.visible');\n    cy.contains('Upload Vídeo').should('not.exist');\n    cy.contains('Upload Streaming').should('not.exist');\n});",
+                  "err": {},
+                  "uuid": "4467d6c9-6bd1-4b64-892d-2db9c152493c",
+                  "parentUUID": "56c4758b-a4f5-4297-906c-8cb390283985",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "4467d6c9-6bd1-4b64-892d-2db9c152493c"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3216,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "7ea40d5a-bd1e-40d7-9e9c-e457749eb87f",
+              "title": "Mobile Navigation (390x844)",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle mobile menu correctly",
+                  "fullTitle": "Navigation and Layout Tests Mobile Navigation (390x844) should handle mobile menu correctly",
+                  "timedOut": null,
+                  "duration": 1736,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('div.hidden.md\\\\:flex.gap-2').should('not.be.visible');\ncy.get('button[aria-label=\"Open navigation menu\"]').should('be.visible').click();\ncy.get('nav.md\\\\:hidden').should('be.visible').within(() => {\n    cy.contains('a', 'Entrar').should('be.visible');\n    cy.contains('button', 'Cadastro').should('be.visible');\n});\ncy.get('button[aria-label=\"Close navigation menu\"]').should('be.visible').click();\ncy.get('nav.md\\\\:hidden').should('not.exist');",
+                  "err": {},
+                  "uuid": "4f6d5a30-c4a2-4e0a-b01f-415844818c27",
+                  "parentUUID": "7ea40d5a-bd1e-40d7-9e9c-e457749eb87f",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "4f6d5a30-c4a2-4e0a-b01f-415844818c27"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1736,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Relatório de testes E2E",
+        "embeddedScreenshots": true,
+        "inlineAssets": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}

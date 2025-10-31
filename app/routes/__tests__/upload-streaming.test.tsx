@@ -1,7 +1,7 @@
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UploadStreaming from '../upload-streaming';
-import { expect, test, describe, vi, beforeEach } from 'vitest';
+import { expect, test, describe, vi, beforeEach, type Mock } from 'vitest';
 
 const mockMediaStreamTrack = { stop: vi.fn() };
 const mockMediaStream = { getTracks: () => [mockMediaStreamTrack] };
@@ -97,7 +97,7 @@ describe('UploadStreaming', () => {
   });
 
   test('Error handling for camera access', async () => {
-    (navigator.mediaDevices.getUserMedia as vi.Mock).mockRejectedValueOnce(new Error('Permission denied'));
+  (navigator.mediaDevices.getUserMedia as unknown as Mock).mockRejectedValueOnce(new Error('Permission denied'));
     render(<UploadStreaming />);
     await userEvent.click(screen.getByRole('button', { name: /iniciar gravação/i }));
     await waitFor(() => {
