@@ -7,10 +7,8 @@ import {
 import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router";
 
-import { Link } from "react-router"; 
-
 export default function Home() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   
   return (
     <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-16">
@@ -25,10 +23,8 @@ export default function Home() {
       <p className="text-lg text-gray-600 mb-8">
         Assistente Computacional Anti-trapaça para garantir provas seguras.
       </p>
-        <div className="flex gap-4">
-        <Button asChild variant="outline">
-          <Link to="/login">Entrar</Link>
-        </Button>
+      <div className="flex gap-4">
+        <Button variant="outline" onClick={() => navigate("/login")}>Entrar</Button>
         <Button>Cadastro</Button>
       </div>
 
