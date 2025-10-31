@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
+const config = {
   plugins: [
     tailwindcss(),
     !process.env.VITEST && reactRouter(),
@@ -16,23 +16,31 @@ export default defineConfig({
     include: ['app/**/*.test.{ts,tsx}'], 
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json-summary', 'html'],
       exclude: [
+        '**/node_modules/**',
+        '**/__tests__/**', 
+        '**/*.d.ts',
         'app/app.css',
         'app/routes.ts',
         'react-router.config.ts',
-        '**/*.d.ts',
-        '**/node_modules/**',
-        '**/__tests__/**', 
+        'components.json',
+        'vite.config.ts',
+        'vitest.setup.ts',
+        'cypress.config.ts',
+        'build/**',
+        'html/**',
+        'cypress/**',
+        'scripts/**',
+        '.react-router/**',
+        'app/+types/**',
         'app/root.tsx',
         'app/main.tsx',
         'app/entry.client.tsx',
         'app/entry.server.tsx',
-        'app/+types/**',
-        'components.json',
-        'vite.config.ts',
-        'vitest.setup.ts'
       ],
     },
   },
-});
+};
+
+export default defineConfig(config as any);

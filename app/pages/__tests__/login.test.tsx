@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router'; 
-import LoginPage from '../login';
+import { createMemoryRouter, RouterProvider } from 'react-router';
+import LoginPage, { action } from '../login';
 import { expect, test, describe, vi } from 'vitest';
 
 vi.mock('~/components/login-form', () => ({
@@ -8,18 +8,29 @@ vi.mock('~/components/login-form', () => ({
 }));
 
 describe('LoginPage', () => {
+  function renderWithRouter() {
+    const router = createMemoryRouter([
+      {
+        path: '/',
+        element: <LoginPage />,
+        action: action,
+      },
+    ]);
+    return render(<RouterProvider router={router} />);
+  }
+
   test('Renders LoginForm component', () => {
-    render(<LoginPage />, { wrapper: MemoryRouter });
+    renderWithRouter();
     expect(screen.getByTestId('mock-login-form')).toBeInTheDocument();
   });
 
   test('Renders the ExamGuard logo and name', () => {
-    render(<LoginPage />, { wrapper: MemoryRouter });
+    renderWithRouter();
     expect(screen.getByText('ExamGuard')).toBeInTheDocument();
   });
 
   test('Renders the mascot image', () => {
-    render(<LoginPage />, { wrapper: MemoryRouter });
+    renderWithRouter();
     const mascotImage = screen.getByAltText('Image');
     expect(mascotImage).toBeInTheDocument();
     expect(mascotImage).toHaveAttribute('src', '/login-mascot.png');

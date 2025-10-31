@@ -3,18 +3,21 @@ import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import type { AuthState } from "~/pages/login"
-
+import { Form, redirect } from "react-router"
 interface LoginFormProps extends React.ComponentProps<"form"> {
-  setAuthState: React.Dispatch<React.SetStateAction<AuthState>>
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState>>,
+  actionData?: any,
 }
 
 export function LoginForm({
   className,
   setAuthState,
+  actionData,
   ...props
 }: LoginFormProps) {
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <Form method="post" replace className={cn("flex flex-col gap-6", className)}>
+      <input type="hidden" name="mode" value="LOGIN" />
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-muted-foreground text-sm text-balance">
@@ -24,7 +27,8 @@ export function LoginForm({
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input id="email" name="email" type="email" placeholder="m@example.com" required />
+          {actionData?.error && <p className="text-red-500">{actionData.error.message}</p>}
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
@@ -36,7 +40,7 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input id="password" name="password" type="password" required />
         </div>
         <Button type="submit" className="w-full hover:bg-[#131fa8] cursor-pointer">
           Login
@@ -58,10 +62,10 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <button onClick={() => setAuthState({ state: "register" })} className="underline underline-offset-4 cursor-pointer">
+        <button type="button" onClick={() => setAuthState({ state: "register" })} className="underline underline-offset-4 cursor-pointer">
           Sign up
         </button>
       </div>
-    </form>
+    </Form>
   )
 }

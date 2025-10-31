@@ -4,3 +4,11 @@
 # React Router
 /.react-router/
 /build/
+
+.env
+
+repomix-output.xml
+coverage
+html
+test-report
+cypress

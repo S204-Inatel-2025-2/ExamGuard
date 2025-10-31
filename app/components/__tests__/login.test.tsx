@@ -1,11 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router'; 
-import LoginPage from '../login';
+import LoginPage from '../../pages/login';
 import { expect, test, describe, vi } from 'vitest';
 
 vi.mock('~/components/login-form', () => ({
   LoginForm: () => <div data-testid="mock-login-form">Mock Login Form</div>,
 }));
+vi.mock('react-router', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('react-router')>();
+    return {
+      ...actual,
+      useActionData: () => ({}),
+      useNavigate: () => vi.fn(),
+    };
+  });
 
 describe('LoginPage', () => {
   test('Renders LoginForm component', () => {
