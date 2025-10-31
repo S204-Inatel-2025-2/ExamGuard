@@ -13,7 +13,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:report": "npx mochawesome-merge cypress/reports/*.json > mochawesome.json && npx marge mochawesome.json",
-    "test:e2e": "start-server-and-test dev http://localhost:5173 cypress:run && npm run cypress:report",
+    "test:e2e": "start-server-and-test dev http://localhost:5173 cypress:run",
     "test:all": "npm run test:coverage && npm run test:e2e"
   },
   "dependencies": {
