@@ -11,7 +11,7 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run --reporter mochawesome",
+    "cypress:run": "cypress run",
     "cypress:report": "npx mochawesome-merge cypress/reports/*.json > mochawesome.json && npx marge mochawesome.json",
     "test:e2e": "start-server-and-test dev http://localhost:5173 cypress:run && npm run cypress:report",
     "test:all": "npm run test:coverage && npm run test:e2e"
