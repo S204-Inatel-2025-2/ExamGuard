@@ -136,7 +136,7 @@ function UploadVideo() {
 
 
   return (
-    <div className="flex-1 flex items-center justify-center bg-gray-50 p-6">
+    <div className="flex-1 flex items-center justify-center light:bg-gray-50 p-6">
       <Card className="w-full max-w-lg shadow-lg rounded-2xl">
         <CardContent className="px-6 py-6 space-y-4">
           <h2 className="text-2xl font-semibold text-center">
@@ -144,7 +144,7 @@ function UploadVideo() {
           </h2>
 
           {!videoFile && (
-            <div data-testid="upload-area" className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 bg-white">
+            <div data-testid="upload-area" className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 light:bg-white dark:bg-gray-800">
               <input
                 ref={inputRef}
                 type="file"
@@ -176,7 +176,7 @@ function UploadVideo() {
                   aria-label="Cancelar upload"
                   className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 dark:text-gray-800" />
                 </button>
               </div>
 
