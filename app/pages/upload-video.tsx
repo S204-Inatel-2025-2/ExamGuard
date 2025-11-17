@@ -1,18 +1,21 @@
 import { useState, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardAction, CardContent } from "../components/ui/card";
-import { X } from "lucide-react";
+import { Input } from "../components/ui/input"; // Importe o Input
+import { X, Loader2 } from "lucide-react"; // Importe o Loader2 também
 
 function UploadVideo() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  // NOVO ESTADO: para guardar o nome da prova
+  const [examName, setExamName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isUploading, setIsUploading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  
+
   const [processedVideoUrl, setProcessedVideoUrl] = useState<string | null>(null);
 
   const pollIntervalRef = useRef<number | null>(null);
@@ -24,10 +27,10 @@ function UploadVideo() {
       setVideoUrl(URL.createObjectURL(file));
       setUploadError(null);
       setStatusMessage(null);
-      setProcessedVideoUrl(null); 
+      setProcessedVideoUrl(null);
       setIsProcessing(false);
       setIsUploading(false);
-      
+
       if (pollIntervalRef.current) {
         clearInterval(pollIntervalRef.current);
       }
@@ -37,9 +40,11 @@ function UploadVideo() {
   const handleCancel = () => {
     setVideoFile(null);
     setVideoUrl(null);
+    // Limpa também o nome da prova
+    setExamName("");
     setUploadError(null);
     setStatusMessage(null);
-    setProcessedVideoUrl(null); 
+    setProcessedVideoUrl(null);
     setIsProcessing(false);
     setIsUploading(false);
 
@@ -50,15 +55,17 @@ function UploadVideo() {
       inputRef.current.value = "";
     }
   };
-  
+
   const pollTaskStatus = (taskId: string) => {
     pollIntervalRef.current = window.setInterval(async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/status/${taskId}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/status/${taskId}`
+        );
         if (!response.ok) {
-           throw new Error("Erro ao consultar o status da tarefa.");
+          throw new Error("Erro ao consultar o status da tarefa.");
         }
-        
+
         const data = await response.json();
 
         if (data.status === "CONCLUIDO") {
@@ -67,17 +74,17 @@ function UploadVideo() {
           }
           setIsProcessing(false);
           setStatusMessage("Processamento concluído!");
-          setProcessedVideoUrl(data.video_url); 
+          setProcessedVideoUrl(data.video_url);
           console.log("Vídeo processado:", data.video_url);
-
         } else if (data.status === "FALHA") {
           // FALHA
           if (pollIntervalRef.current) {
             clearInterval(pollIntervalRef.current);
           }
           setIsProcessing(false);
-          setUploadError(`Falha no processamento: ${data.error || 'Erro desconhecido'}`);
-          
+          setUploadError(
+            `Falha no processamento: ${data.error || "Erro desconhecido"}`
+          );
         } else {
           console.log("Status: PENDENTE");
         }
@@ -86,13 +93,20 @@ function UploadVideo() {
           clearInterval(pollIntervalRef.current);
         }
         setIsProcessing(false);
-        setUploadError(err.message || "Erro ao verificar status do processamento.");
+        setUploadError(
+          err.message || "Erro ao verificar status do processamento."
+        );
       }
-    }, 5000); 
+    }, 5000);
   };
 
   const handleUpload = async () => {
+    // VALIDAÇÃO: Verifica se o vídeo E o nome da prova existem
     if (!videoFile) return;
+    if (!examName.trim()) {
+      setUploadError("Por favor, dê um nome para a prova.");
+      return;
+    }
 
     setIsUploading(true);
     setIsProcessing(false);
@@ -102,17 +116,24 @@ function UploadVideo() {
 
     const formData = new FormData();
     formData.append("video", videoFile, videoFile.name);
+    // ADICIONADO: Envia o nome da prova para o backend
+    formData.append("exam_name", examName.trim());
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/upload-video`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/upload-video`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       setIsUploading(false);
 
       if (!response.ok) {
-        const errData = await response.json().catch(() => ({ error: "Falha no upload." }));
+        const errData = await response
+          .json()
+          .catch(() => ({ error: "Falha no upload." }));
         throw new Error(errData.error || "Falha no upload.");
       }
 
@@ -122,7 +143,6 @@ function UploadVideo() {
       setStatusMessage("Vídeo enviado. Processando análise...");
 
       pollTaskStatus(result.task_id);
-
     } catch (err: any) {
       setIsUploading(false);
       setUploadError(err.message || "Ocorreu um erro desconhecido.");
@@ -134,7 +154,6 @@ function UploadVideo() {
   if (isUploading) buttonText = "Enviando...";
   if (isProcessing) buttonText = "Processando...";
 
-
   return (
     <div className="flex-1 flex items-center justify-center bg-gray-50 p-6">
       <Card className="w-full max-w-lg shadow-lg rounded-2xl">
@@ -143,8 +162,30 @@ function UploadVideo() {
             Upload de Vídeo
           </h2>
 
+          {/* == AQUI ESTÁ A MUDANÇA PRINCIPAL == */}
+          <div className="space-y-2">
+            <label
+              htmlFor="exam-name"
+              className="text-sm font-medium text-gray-700"
+            >
+              Nome da Prova
+            </label>
+            <Input
+              id="exam-name"
+              placeholder="Ex: Prova de Matemática - Turma A"
+              value={examName}
+              onChange={(e) => setExamName(e.target.value)}
+              disabled={isDisabled || !!videoFile}
+              className="bg-white"
+            />
+          </div>
+          {/* ==================================== */}
+
           {!videoFile && (
-            <div data-testid="upload-area" className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 bg-white">
+            <div
+              data-testid="upload-area"
+              className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 bg-white"
+            >
               <input
                 ref={inputRef}
                 type="file"
@@ -156,7 +197,7 @@ function UploadVideo() {
               />
               <label
                 htmlFor="video-upload"
-                className="cursor-pointer text-sm text_gray-600 hover:text-gray-900"
+                className="cursor-pointer text-sm text-gray-600 hover:text-gray-900"
               >
                 Clique para selecionar um vídeo
               </label>
@@ -188,38 +229,41 @@ function UploadVideo() {
             </div>
           )}
         </CardContent>
-        
+
         <CardAction className="w-full text-center px-6 pb-6">
           <Button
             size="lg"
             variant="default"
             className="cursor-pointer w-full"
-            onClick={handleUpload} 
-            disabled={isDisabled || !videoFile}
+            onClick={handleUpload}
+            // MODIFICADO: Desabilita o botão se não tiver vídeo OU nome da prova
+            disabled={isDisabled || !videoFile || !examName.trim()}
           >
-            {buttonText} 
+            {isUploading || isProcessing ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
+            {buttonText}
           </Button>
 
           {statusMessage && !uploadError && (
             <p className="text-blue-600 text-sm mt-2">{statusMessage}</p>
           )}
-          
+
           {uploadError && (
             <p className="text-red-500 text-sm mt-2">{uploadError}</p>
           )}
-          
+
           {processedVideoUrl && (
             <div className="mt-4 p-2 bg-gray-100 rounded text-left text-sm">
               <h4 className="font-bold mb-2">Vídeo Processado:</h4>
-              <video 
-                controls 
-                className="w-full rounded-lg shadow mt-2" 
-                src={processedVideoUrl} 
+              <video
+                controls
+                className="w-full rounded-lg shadow mt-2"
+                src={processedVideoUrl}
                 key={processedVideoUrl}
               />
             </div>
           )}
-
         </CardAction>
       </Card>
     </div>

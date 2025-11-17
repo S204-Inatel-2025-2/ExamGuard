@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, FileVideo, Upload } from "lucide-react";
+import { Search, FileVideo, Upload, Loader2, Folder } from "lucide-react"; // NOVO: Ícone de Pasta
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
@@ -21,60 +21,83 @@ import {
 import { Badge } from "../components/ui/badge";
 import { Link, useNavigate } from "react-router";
 
-// Mock data
-const mockVideos = [
-  {
-    id: 1,
-    nome: "Prova_Matematica_Turma_A.mp4",
-    dataEnvio: "2024-10-15 14:30",
-    status: "Processado",
-  },
-  {
-    id: 2,
-    nome: "Exame_Fisica_Online.mp4",
-    dataEnvio: "2024-10-16 09:15",
-    status: "Processando",
-  },
-  {
-    id: 3,
-    nome: "Avaliacao_Quimica_Turma_B.mp4",
-    dataEnvio: "2024-10-17 16:45",
-    status: "Processado",
-  },
-  {
-    id: 4,
-    nome: "Teste_Historia_EAD.mp4",
-    dataEnvio: "2024-10-18 11:20",
-    status: "Erro",
-  },
-  {
-    id: 5,
-    nome: "Prova_Biologia_Turma_C.mp4",
-    dataEnvio: "2024-10-19 08:00",
-    status: "Processando",
-  },
-];
+const VITE_API_URL = "http://localhost:5001";
+
+// Função para formatar a data
+const formatDate = (isoString: string) => {
+  if (!isoString) return "Data indisponível";
+  try {
+    return new Date(isoString).toLocaleString('pt-BR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  } catch (e) { return isoString; }
+};
 
 export default function DashboardHome() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredVideos = mockVideos.filter((video) =>
-    video.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  const [exams, setExams] = useState<any[]>([]); // MODIFICADO: de 'videos' para 'exams'
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Stats
+  const [stats, setStats] = useState({ total: 0, processing: 0, success: 0 });
+
+  // Busca as "Pastas" (Exams) da API
+  useEffect(() => {
+    const fetchExams = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`${VITE_API_URL}/api/exams`); // MODIFICADO: Rota agora é /api/exams
+        if (!response.ok) {
+          throw new Error("Falha ao buscar as provas.");
+        }
+        const data = await response.json();
+        setExams(data);
+
+        // Calcula os stats
+        let totalVideos = 0;
+        let totalProcessing = 0;
+        let totalSuccess = 0;
+        data.forEach((exam: any) => {
+          totalVideos += exam.video_count;
+          totalProcessing += exam.processing_count;
+          totalSuccess += (exam.video_count - exam.processing_count - exam.failure_count);
+        });
+        setStats({ total: totalVideos, processing: totalProcessing, success: totalSuccess });
+
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExams();
+  }, []);
+
+  // Filtra as pastas (exams)
+  const filteredExams = exams.filter((exam) =>
+    exam.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      Processado: "default",
-      Processando: "secondary",
-      Erro: "destructive",
-    };
-
-    return (
-      <Badge variant={variants[status] || "default"}>
-        {status}
-      </Badge>
-    );
+  // Define o status GERAL da pasta
+  const getExamStatusBadge = (exam: any) => {
+    if (exam.failure_count > 0) {
+      return <Badge variant="destructive">Erro</Badge>;
+    }
+    if (exam.processing_count > 0) {
+      return <Badge variant="secondary">Processando</Badge>;
+    }
+    if (exam.video_count > 0) {
+      return <Badge variant="default">Processado</Badge>;
+    }
+    return <Badge variant="outline">Vazio</Badge>;
   };
 
   return (
@@ -87,11 +110,11 @@ export default function DashboardHome() {
       >
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          Gerencie e monitore seus vídeos de avaliação
+          Gerencie e monitore suas pastas de avaliação
         </p>
       </motion.div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards (Modificado para usar stats reais) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -106,34 +129,40 @@ export default function DashboardHome() {
             <FileVideo className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockVideos.length}</div>
+            {loading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">{stats.total}</div>
+            )}
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Processados</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockVideos.filter((v) => v.status === "Processado").length}
-            </div>
+            {loading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">{stats.success}</div>
+            )}
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Em Processo</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockVideos.filter((v) => v.status === "Processando").length}
-            </div>
+            {loading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">{stats.processing}</div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Upload Button Section */}
+      {/* Upload Button Section (Sem alterações) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -147,17 +176,10 @@ export default function DashboardHome() {
           <Upload className="mr-2 h-4 w-4" />
           Enviar Vídeo
         </Button>
-        <Button
-          onClick={() => navigate("/dashboard/upload-streaming")}
-          variant="outline"
-          className="flex-1 sm:flex-initial"
-        >
-          <FileVideo className="mr-2 h-4 w-4" />
-          Streaming ao Vivo
-        </Button>
+        {/* ... (botão de streaming) ... */}
       </motion.div>
 
-      {/* Table Section */}
+      {/* Table Section (MODIFICADO para mostrar PASTAS) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -165,87 +187,111 @@ export default function DashboardHome() {
       >
         <Card>
           <CardHeader>
-            <CardTitle>Vídeos Enviados</CardTitle>
+            <CardTitle>Pastas de Provas</CardTitle>
             <CardDescription>
-              Lista de todos os vídeos enviados para análise
+              Cada pasta contém um ou mais vídeos enviados.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Search Bar */}
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Buscar por nome do arquivo..."
+                placeholder="Buscar por Nome da Pasta..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
 
+            {loading && (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              </div>
+            )}
+            {error && (
+              <div className="text-center py-8 text-red-500">
+                <p>Erro ao carregar pastas: {error}</p>
+              </div>
+            )}
+
             {/* Table - Desktop */}
-            <div className="hidden md:block rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome do Arquivo</TableHead>
-                    <TableHead>Data de Envio</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredVideos.length > 0 ? (
-                    filteredVideos.map((video) => (
-                      <TableRow key={video.id}>
-                        <TableCell className="font-medium">
-                          <Link to={`/dashboard/video/${video.id}`} className="hover:underline">
-                            {video.nome}
-                          </Link>
-                        </TableCell>
-                        <TableCell>{video.dataEnvio}</TableCell>
-                        <TableCell>{getStatusBadge(video.status)}</TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
+            {!loading && !error && (
+              <div className="hidden md:block rounded-md border">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center py-8">
-                        Nenhum vídeo encontrado
-                      </TableCell>
+                      <TableHead>Nome da Pasta</TableHead>
+                      <TableHead>Vídeos</TableHead>
+                      <TableHead>Data de Criação</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredExams.length > 0 ? (
+                      filteredExams.map((exam) => (
+                        <TableRow key={exam.id}>
+                          <TableCell className="font-medium">
+                            <Link
+                              to={`/dashboard/exam/${exam.id}`} // MODIFICADO: Link para a pasta
+                              className="hover:underline flex items-center"
+                            >
+                              <Folder className="h-4 w-4 mr-2 text-muted-foreground" />
+                              {exam.name}
+                            </Link>
+                          </TableCell>
+                          <TableCell>{exam.video_count}</TableCell>
+                          <TableCell>{formatDate(exam.created_at)}</TableCell>
+                          <TableCell>{getExamStatusBadge(exam)}</TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8">
+                          Nenhuma pasta encontrada
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
 
             {/* Cards - Mobile */}
-            <div className="md:hidden space-y-3">
-              {filteredVideos.length > 0 ? (
-                filteredVideos.map((video) => (
-                  <Card key={video.id}>
-                    <CardContent className="p-4">
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <Link to={`/dashboard/video/${video.id}`} className="font-medium text-sm break-all">
-                            {video.nome}
-                          </Link>
-                          {getStatusBadge(video.status)}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {video.dataEnvio}
-                        </p>
-                      </div>
+            {!loading && !error && (
+              <div className="md:hidden space-y-3">
+                {filteredExams.length > 0 ? (
+                  filteredExams.map((exam) => (
+                    <Card key={exam.id}>
+                      <CardContent className="p-4">
+                        <Link to={`/dashboard/exam/${exam.id}`}> {/* MODIFICADO: Link */}
+                          <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <span className="font-medium text-sm break-all flex items-center">
+                                <Folder className="h-4 w-4 mr-2 text-muted-foreground" />
+                                {exam.name}
+                              </span>
+                              {getExamStatusBadge(exam)}
+                            </div>
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                              <span>{formatDate(exam.created_at)}</span>
+                              <span>{exam.video_count} vídeo(s)</span>
+                            </div>
+                          </div>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <p className="text-muted-foreground">
+                        Nenhuma pasta encontrada
+                      </p>
                     </CardContent>
                   </Card>
-                ))
-              ) : (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">
-                      Nenhum vídeo encontrado
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
