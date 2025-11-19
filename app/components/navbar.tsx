@@ -1,10 +1,18 @@
 import { motion } from "framer-motion";
-import { Crosshair, Menu, X } from "lucide-react";
+import { Crosshair, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { auth } from "~/utils/auth";
+import { Button } from "./ui/button";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    auth.removeToken();
+    navigate('/login');
+  };
 
   return (
     <header className="border-b sticky top-0 bg-white z-50">
@@ -16,13 +24,16 @@ function Navbar() {
             ExamGuard
         </Link>
 
-        <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <Link to="dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
           <Link to="dashboard/upload-streaming" className="hover:text-gray-600">
             Upload Streaming
           </Link>
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut className="h-4 w-4" />
+          </Button>
         </nav>
 
         <button
@@ -40,14 +51,16 @@ function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden flex flex-col items-center gap-4 py-4 border-t bg-white"
         >
-          <Link to="/upload-video" className="hover:text-gray-600">
+          <Link to="dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
-          <Link to="/upload-streaming" className="hover:text-gray-600">
+          <Link to="dashboard/upload-streaming" className="hover:text-gray-600">
             Upload Streaming
           </Link>
-          <div className="flex gap-2">
-          </div>
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Sair
+          </Button>
         </motion.nav>
       )}
     </header>

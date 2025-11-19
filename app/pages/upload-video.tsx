@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardAction, CardContent } from "../components/ui/card";
 import { X } from "lucide-react";
+import api from "~/services/axios-backend-client";
 
 // URL Flask
 function UploadVideo() {
@@ -114,30 +115,22 @@ function UploadVideo() {
 
     try {
       // Envia o arquivo para a rota de upload (POST)
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/upload-video`, {
-        method: "POST",
-        body: formData,
+      const response = await api.post('/upload-video', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
+      console.log(response);
 
       setIsUploading(false);
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({ error: "Falha no upload." }));
-        throw new Error(errData.error || "Falha no upload.");
-      }
-
-      const result = await response.json();
-
-      //Upload OK! Agora começa o processamento
       setIsProcessing(true);
       setStatusMessage("Vídeo enviado. Processando análise...");
 
       //Inicia o polling para verificar o status
-      pollTaskStatus(result.task_id);
+      pollTaskStatus(response.data.task_id);
 
     } catch (err: any) {
       setIsUploading(false);
-      setUploadError(err.message || "Ocorreu um erro desconhecido.");
+      console.error(err);
+      setUploadError(err.response.data.error || "Ocorreu um erro desconhecido.");
     }
   };
 

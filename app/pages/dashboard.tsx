@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, FileVideo, Upload } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { auth } from "~/utils/auth";
 import {
   Table,
   TableBody,
@@ -20,6 +21,8 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Link, useNavigate } from "react-router";
+import api from "~/services/axios-backend-client";
+import { toast } from "sonner";
 
 // Mock data
 const mockVideos = [
@@ -56,10 +59,64 @@ const mockVideos = [
 ];
 
 export default function DashboardHome() {
+  interface Video {
+    created_at: string,
+    filename: string,
+    id: string,
+    is_clip: boolean,
+    original_filename: string,
+    parent_video: string,
+    processed_filename: string,
+    status: string,
+    task_id: string,
+    user_id: string
+  }
+  interface UserVideos {
+    processed_videos: number,
+    videos: Video[]
+  }
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [userVideosData, setUserVideosData] = useState<undefined | UserVideos>(undefined);
+  const [isLoading, setIsloading] = useState(true)
+  useEffect(() => {
+    if (!auth.isAuthenticated()) {
+      navigate('/login', { replace: true });
+    }
+    setIsloading(true)
+    async function fetchVideos() {
+      try {
+        const response = await api.get('/videos');
+        if(response.data.data) {
+          const videoData = response.data.data;
+          console.log('videoData', videoData);
+          setUserVideosData(videoData)
+        } else {
+          setUserVideosData(undefined)
+        }
+      } catch (error: any) {
+        if (error.response?.status >= 500) {
+          toast.error('Erro no servidor. Tente novamente em alguns minutos.');
+        } else if (error.response?.status >= 400) {
+          toast.error(error.response?.data?.message || 'Erro na requisição');
+        }
+      } finally {
+        setIsloading(false);
+      }
+    }
+    fetchVideos()
+  }, [navigate]);
 
-  const filteredVideos = mockVideos.filter((video) =>
+  // Mapear dados da API para formato de exibição
+  const apiVideos = userVideosData?.videos.map(video => ({
+    id: video.id,
+    nome: video.original_filename,
+    dataEnvio: new Date(video.created_at).toLocaleString('pt-BR'),
+    status: video.status === 'completed' ? 'Processado' : 
+            video.status === 'processing' ? 'Processando' : 'Erro'
+  })) || [];
+
+  const filteredVideos = apiVideos.filter((video) =>
     video.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -106,7 +163,7 @@ export default function DashboardHome() {
             <FileVideo className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockVideos.length}</div>
+            <div className="text-2xl font-bold">{ userVideosData ? userVideosData.videos.length : 0}</div>
           </CardContent>
         </Card>
 
@@ -115,9 +172,7 @@ export default function DashboardHome() {
             <CardTitle className="text-sm font-medium">Processados</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockVideos.filter((v) => v.status === "Processado").length}
-            </div>
+            <div className="text-2xl font-bold">{ userVideosData ? userVideosData.processed_videos : 0}</div>
           </CardContent>
         </Card>
 
@@ -126,9 +181,7 @@ export default function DashboardHome() {
             <CardTitle className="text-sm font-medium">Em Processo</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockVideos.filter((v) => v.status === "Processando").length}
-            </div>
+               <div className="text-2xl font-bold">{ userVideosData ? userVideosData.videos.length - userVideosData.processed_videos : 0}</div>
           </CardContent>
         </Card>
       </motion.div>
@@ -193,7 +246,13 @@ export default function DashboardHome() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredVideos.length > 0 ? (
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-8">
+                        Carregando vídeos...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredVideos.length > 0 ? (
                     filteredVideos.map((video) => (
                       <TableRow key={video.id}>
                         <TableCell className="font-medium">
@@ -218,7 +277,15 @@ export default function DashboardHome() {
 
             {/* Cards - Mobile */}
             <div className="md:hidden space-y-3">
-              {filteredVideos.length > 0 ? (
+              {isLoading ? (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <p className="text-muted-foreground">
+                      Carregando vídeos...
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : filteredVideos.length > 0 ? (
                 filteredVideos.map((video) => (
                   <Card key={video.id}>
                     <CardContent className="p-4">
