@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardAction, CardContent } from "../components/ui/card";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import api from "~/services/axios-backend-client";
 
 function UploadVideo() {
@@ -69,8 +69,6 @@ function UploadVideo() {
           setIsProcessing(false);
           setStatusMessage("Processamento concluído!");
           setProcessedVideoUrl(data.video_url); 
-          console.log("Vídeo processado:", data.video_url);
-
         } else if (data.status === "FALHA") {
           // FALHA
           if (pollIntervalRef.current) {
@@ -79,8 +77,6 @@ function UploadVideo() {
           setIsProcessing(false);
           setUploadError(`Falha no processamento: ${data.error || 'Erro desconhecido'}`);
           
-        } else {
-          console.log("Status: PENDENTE");
         }
       } catch (err: any) {
         if (pollIntervalRef.current) {
@@ -111,24 +107,19 @@ function UploadVideo() {
       });
       console.log(response);
 
+      // Se chegou aqui, é 200 OK
       setIsUploading(false);
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({ error: "Falha no upload." }));
-        throw new Error(errData.error || "Falha no upload.");
-      }
-
-      const result = await response.json();
-
       setIsProcessing(true);
-      setStatusMessage("Vídeo enviado. Processando análise...");
+      setStatusMessage("Vídeo enviado com sucesso! Processando análise...");
 
-      pollTaskStatus(result.task_id);
+      // Inicia o polling do status
+      pollTaskStatus(response.data.task_id);
 
     } catch (err: any) {
       setIsUploading(false);
+      setIsProcessing(false);
       console.error(err);
-      setUploadError(err.response.data.error || "Ocorreu um erro desconhecido.");
+      setUploadError(err.response?.data?.error || "Ocorreu um erro no upload.");
     }
   };
 
@@ -200,6 +191,7 @@ function UploadVideo() {
             onClick={handleUpload} 
             disabled={isDisabled || !videoFile}
           >
+            {isDisabled && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {buttonText} 
           </Button>
 

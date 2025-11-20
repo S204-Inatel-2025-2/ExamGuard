@@ -8,6 +8,13 @@ import { useMounted } from "~/hooks/use-mounted";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMounted = useMounted();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    auth.removeToken();
+    navigate('/login', { replace: true });
+  }
 
   return (
     <header className="border-b sticky top-0 bg-white z-50">
@@ -20,7 +27,7 @@ function Navbar() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
-          <Link to="dashboard/upload-video" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
           <Link to="/dashboard/upload-streaming" className="hover:text-gray-600">
@@ -49,10 +56,10 @@ function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden flex flex-col items-center gap-4 py-4 border-t bg-white"
         >
-          <Link to="/upload-video" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-video" className="hover:text-gray-600" onClick={() => setMobileMenuOpen(false)}>
             Upload Vídeo
           </Link>
-          <Link to="/upload-streaming" className="hover:text-gray-600">
+          <Link to="/dashboard/upload-streaming" className="hover:text-gray-600" onClick={() => setMobileMenuOpen(false)}>
             Upload Streaming
           </Link>
           <Button variant="ghost" size="sm" onClick={handleLogout}>

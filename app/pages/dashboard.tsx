@@ -23,6 +23,7 @@ import { Badge } from "../components/ui/badge";
 import { Link, useNavigate } from "react-router";
 import api from "~/services/axios-backend-client";
 import { toast } from "sonner";
+import { Skeleton } from "~/components/ui/skeleton";
 
 // Mock data
 const mockVideos = [
@@ -89,7 +90,6 @@ export default function DashboardHome() {
         const response = await api.get('/videos');
         if(response.data.data) {
           const videoData = response.data.data;
-          console.log('videoData', videoData);
           setUserVideosData(videoData)
         } else {
           setUserVideosData(undefined)
@@ -155,35 +155,69 @@ export default function DashboardHome() {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="grid gap-4 md:grid-cols-3"
       >
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total de Vídeos
-            </CardTitle>
-            <FileVideo className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{ userVideosData ? userVideosData.videos.length : 0}</div>
-          </CardContent>
-        </Card>
+        {isLoading ? (
+          <>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-12" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-14" />
+              </CardContent>
+            </Card>
+          </>
+        ) : (
+          <>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total de Vídeos
+                </CardTitle>
+                <FileVideo className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{ userVideosData ? userVideosData.videos.length : 0}</div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Processados</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{ userVideosData ? userVideosData.processed_videos : 0}</div>
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Processados</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{ userVideosData ? userVideosData.processed_videos : 0}</div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Em Processo</CardTitle>
-          </CardHeader>
-          <CardContent>
-               <div className="text-2xl font-bold">{ userVideosData ? userVideosData.videos.length - userVideosData.processed_videos : 0}</div>
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Em Processo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                   <div className="text-2xl font-bold">{ userVideosData ? userVideosData.videos.length - userVideosData.processed_videos : 0}</div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </motion.div>
 
       {/* Upload Button Section */}
@@ -247,11 +281,13 @@ export default function DashboardHome() {
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center py-8">
-                        Carregando vídeos...
-                      </TableCell>
-                    </TableRow>
+                    Array.from({ length: 3 }).map((_, i) => (
+                      <TableRow key={i}>
+                        <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                      </TableRow>
+                    ))
                   ) : filteredVideos.length > 0 ? (
                     filteredVideos.map((video) => (
                       <TableRow key={video.id}>
@@ -278,13 +314,19 @@ export default function DashboardHome() {
             {/* Cards - Mobile */}
             <div className="md:hidden space-y-3">
               {isLoading ? (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">
-                      Carregando vídeos...
-                    </p>
-                  </CardContent>
-                </Card>
+                Array.from({ length: 3 }).map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <Skeleton className="h-4 w-40" />
+                          <Skeleton className="h-6 w-16" />
+                        </div>
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
               ) : filteredVideos.length > 0 ? (
                 filteredVideos.map((video) => (
                   <Card key={video.id}>
