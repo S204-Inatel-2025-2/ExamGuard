@@ -61,7 +61,7 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <button onClick={() => setAuthState({ state: "register" })} className="underline underline-offset-4 cursor-pointer">
+        <button type="button" onClick={() => setAuthState({ state: "register" })} className="underline underline-offset-4 cursor-pointer">
           Sign up
         </button>
       </div>

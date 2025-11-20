@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { Crosshair, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router"; 
+import { useMounted } from "~/hooks/use-mounted";
 import { Button } from "./ui/button";
 
 function LandingPageNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const isMounted = useMounted();
 
   return (
     <header className="border-b sticky top-0 bg-white z-50">
@@ -22,30 +24,34 @@ function LandingPageNavbar() {
         </nav>
 
         <div className="hidden md:flex gap-2">
-          <Button variant="outline" onClick={() => navigate("/login")}>
-            Entrar
+          <Button asChild variant="outline">
+            <Link to="/login">Entrar</Link>
           </Button>
           <Button>Cadastro</Button>
         </div>
 
-        <button
-          className="md:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
+        {isMounted && (
+            <button
+                className="md:hidden"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            >
+                {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+        )}
       </div>
 
-      {mobileMenuOpen && (
+      {isMounted && mobileMenuOpen && (
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden flex flex-col items-center gap-4 py-4 border-t bg-white"
         >
           <div className="flex gap-2">
-            <Button variant="outline">Entrar</Button>
-            <Button>Cadastro</Button>
+            <Button asChild variant="outline">
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Entrar</Link>
+            </Button>
+            <Button onClick={() => setMobileMenuOpen(false)}>Cadastro</Button>
           </div>
         </motion.nav>
       )}
