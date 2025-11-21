@@ -1,19 +1,23 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
-import { Card, CardAction, CardContent } from "../components/ui/card";
-import { X } from "lucide-react";
+import { Input } from "../components/ui/input";
+import { Card, CardContent } from "../components/ui/card";
+import { X, UploadCloud, CheckCircle, Loader2 } from "lucide-react";
 
 function UploadVideo() {
+  const navigate = useNavigate();
   const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isUploading, setIsUploading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
-  const [processedVideoUrl, setProcessedVideoUrl] = useState<string | null>(null);
+  // ID do vídeo para gerar o link final
+  const [finishedVideoId, setFinishedVideoId] = useState<number | null>(null);
 
   const pollIntervalRef = useRef<number | null>(null);
 
@@ -21,87 +25,47 @@ function UploadVideo() {
     const file = e.target.files?.[0];
     if (file) {
       setVideoFile(file);
-      setVideoUrl(URL.createObjectURL(file));
-      setUploadError(null);
+      if (!title) setTitle(file.name.replace(/\.[^/.]+$/, ""));
+      setError(null);
       setStatusMessage(null);
-      setProcessedVideoUrl(null); 
-      setIsProcessing(false);
-      setIsUploading(false);
-      
-      if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current);
-      }
+      setFinishedVideoId(null);
     }
   };
 
-  const handleCancel = () => {
-    setVideoFile(null);
-    setVideoUrl(null);
-    setUploadError(null);
-    setStatusMessage(null);
-    setProcessedVideoUrl(null); 
-    setIsProcessing(false);
-    setIsUploading(false);
-
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current);
-    }
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
-  };
-  
-  const pollTaskStatus = (taskId: string) => {
+  const pollTaskStatus = (taskId: string, videoId: number) => {
     pollIntervalRef.current = window.setInterval(async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/status/${taskId}`);
-        if (!response.ok) {
-           throw new Error("Erro ao consultar o status da tarefa.");
-        }
-        
         const data = await response.json();
 
         if (data.status === "CONCLUIDO") {
-          if (pollIntervalRef.current) {
-            clearInterval(pollIntervalRef.current);
-          }
+          // SUCESSO: Para o loading e mostra o botão
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
           setIsProcessing(false);
-          setStatusMessage("Processamento concluído!");
-          setProcessedVideoUrl(data.video_url); 
-          console.log("Vídeo processado:", data.video_url);
-
+          setFinishedVideoId(videoId); // <--- Isso ativa a tela de sucesso
+          setStatusMessage("Análise concluída com sucesso!");
+        
         } else if (data.status === "FALHA") {
-          // FALHA
-          if (pollIntervalRef.current) {
-            clearInterval(pollIntervalRef.current);
-          }
+          // ERRO
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
           setIsProcessing(false);
-          setUploadError(`Falha no processamento: ${data.error || 'Erro desconhecido'}`);
-          
-        } else {
-          console.log("Status: PENDENTE");
+          setError("Ocorreu um erro no processamento do vídeo.");
         }
-      } catch (err: any) {
-        if (pollIntervalRef.current) {
-          clearInterval(pollIntervalRef.current);
-        }
-        setIsProcessing(false);
-        setUploadError(err.message || "Erro ao verificar status do processamento.");
+      } catch (err) {
+        console.error(err);
       }
-    }, 5000); 
+    }, 3000);
   };
 
   const handleUpload = async () => {
-    if (!videoFile) return;
+    if (!videoFile || !title) return;
 
     setIsUploading(true);
-    setIsProcessing(false);
-    setUploadError(null);
-    setStatusMessage("Enviando vídeo...");
-    setProcessedVideoUrl(null);
-
+    setError(null);
+    
     const formData = new FormData();
-    formData.append("video", videoFile, videoFile.name);
+    formData.append("video", videoFile);
+    formData.append("title", title);
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/upload-video`, {
@@ -109,118 +73,94 @@ function UploadVideo() {
         body: formData,
       });
 
-      setIsUploading(false);
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({ error: "Falha no upload." }));
-        throw new Error(errData.error || "Falha no upload.");
-      }
+      if (!response.ok) throw new Error("Falha no upload");
 
       const result = await response.json();
-
-      setIsProcessing(true);
-      setStatusMessage("Vídeo enviado. Processando análise...");
-
-      pollTaskStatus(result.task_id);
+      
+      setIsUploading(false);
+      setIsProcessing(true); // Começa a girar a roleta
+      setStatusMessage("Processando inteligência artificial...");
+      
+      // Começa a vigiar
+      pollTaskStatus(result.task_id, result.video_id);
 
     } catch (err: any) {
       setIsUploading(false);
-      setUploadError(err.message || "Ocorreu um erro desconhecido.");
+      setError("Erro ao enviar vídeo.");
     }
   };
 
-  const isDisabled = isUploading || isProcessing;
-  let buttonText = "Enviar Vídeo";
-  if (isUploading) buttonText = "Enviando...";
-  if (isProcessing) buttonText = "Processando...";
+  // --- TELA DE SUCESSO SIMPLES ---
+  if (finishedVideoId) {
+    return (
+      <div className="flex items-center justify-center p-6">
+        <Card className="w-full max-w-lg text-center p-8 space-y-6">
+          <div className="flex justify-center">
+            <CheckCircle className="w-20 h-20 text-green-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-green-700">Vídeo Processado!</h2>
+          <p className="text-gray-600">
+            A inteligência artificial finalizou a análise do vídeo <strong>{title}</strong>.
+          </p>
+          <Button 
+            size="lg" 
+            className="w-full bg-green-600 hover:bg-green-700"
+            onClick={() => navigate(`/dashboard/video/${finishedVideoId}`)}
+          >
+            Ver Resultado Agora
+          </Button>
+          <Button variant="ghost" onClick={() => window.location.reload()}>
+            Enviar Outro Vídeo
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
-
+  // --- TELA DE UPLOAD NORMAL ---
   return (
-    <div className="flex-1 flex items-center justify-center light:bg-gray-50 p-6">
-      <Card className="w-full max-w-lg shadow-lg rounded-2xl">
-        <CardContent className="px-6 py-6 space-y-4">
-          <h2 className="text-2xl font-semibold text-center">
-            Upload de Vídeo
-          </h2>
+    <div className="flex items-center justify-center p-6">
+      <Card className="w-full max-w-lg p-6">
+        <CardContent className="space-y-6">
+          <h2 className="text-2xl font-semibold text-center">Upload de Vídeo</h2>
 
-          {!videoFile && (
-            <div data-testid="upload-area" className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 light:bg-white dark:bg-gray-800">
-              <input
-                ref={inputRef}
-                type="file"
-                accept="video/*"
-                onChange={handleFileChange}
-                className="hidden"
-                id="video-upload"
-                data-testid="video-input"
-              />
-              <label
-                htmlFor="video-upload"
-                className="cursor-pointer text-sm text_gray-600 hover:text-gray-900"
-              >
-                Clique para selecionar um vídeo
-              </label>
+          {!videoFile ? (
+            <div onClick={() => inputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center cursor-pointer hover:bg-gray-50">
+              <input ref={inputRef} type="file" accept="video/*" onChange={handleFileChange} className="hidden" />
+              <UploadCloud className="w-12 h-12 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-600">Clique para selecionar</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+               <div className="flex items-center justify-between bg-gray-100 p-3 rounded">
+                  <span className="text-sm truncate max-w-[200px]">{videoFile.name}</span>
+                  <button onClick={() => setVideoFile(null)} disabled={isProcessing}>
+                    <X className="w-4 h-4" />
+                  </button>
+               </div>
+               <div className="space-y-1">
+                 <label className="text-sm font-medium">Título</label>
+                 <Input value={title} onChange={e => setTitle(e.target.value)} disabled={isProcessing} />
+               </div>
             </div>
           )}
 
-          {videoFile && videoUrl && (
-            <div className="space-y-4">
-              <div className="relative">
-                <video
-                  controls
-                  className="w-full rounded-lg shadow"
-                  src={videoUrl}
-                />
-                <button
-                  onClick={handleCancel}
-                  aria-label="Cancelar upload"
-                  className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
-                >
-                  <X className="w-5 h-5 dark:text-gray-800" />
-                </button>
-              </div>
+          {error && <p className="text-red-500 text-sm text-center bg-red-50 p-2 rounded">{error}</p>}
+          
+          {isProcessing && (
+             <div className="text-center space-y-2 py-4">
+                <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" />
+                <p className="text-blue-600 font-medium">{statusMessage}</p>
+                <p className="text-xs text-gray-400">Isso pode levar alguns minutos...</p>
+             </div>
+          )}
 
-              <div className="flex justify-center">
-                <span className="text-sm text-gray-600 truncate max-w-[200px]">
-                  {videoFile.name}
-                </span>
-              </div>
-            </div>
+          {!isProcessing && videoFile && (
+            <Button className="w-full" onClick={handleUpload} disabled={isUploading || !title}>
+              {isUploading ? "Enviando..." : "Iniciar Análise"}
+            </Button>
           )}
         </CardContent>
-        
-        <CardAction className="w-full text-center px-6 pb-6">
-          <Button
-            size="lg"
-            variant="default"
-            className="cursor-pointer w-full"
-            onClick={handleUpload} 
-            disabled={isDisabled || !videoFile}
-          >
-            {buttonText} 
-          </Button>
-
-          {statusMessage && !uploadError && (
-            <p className="text-blue-600 text-sm mt-2">{statusMessage}</p>
-          )}
-          
-          {uploadError && (
-            <p className="text-red-500 text-sm mt-2">{uploadError}</p>
-          )}
-          
-          {processedVideoUrl && (
-            <div className="mt-4 p-2 bg-gray-100 rounded text-left text-sm">
-              <h4 className="font-bold mb-2">Vídeo Processado:</h4>
-              <video 
-                controls 
-                className="w-full rounded-lg shadow mt-2" 
-                src={processedVideoUrl} 
-                key={processedVideoUrl}
-              />
-            </div>
-          )}
-
-        </CardAction>
       </Card>
     </div>
   );

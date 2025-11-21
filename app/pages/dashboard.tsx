@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, FileVideo, Upload } from "lucide-react";
+import { Search, FileVideo, Upload, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
@@ -14,67 +14,80 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Link, useNavigate } from "react-router";
 
-// Mock data
-const mockVideos = [
-  {
-    id: 1,
-    nome: "Prova_Matematica_Turma_A.mp4",
-    dataEnvio: "2024-10-15 14:30",
-    status: "Processado",
-  },
-  {
-    id: 2,
-    nome: "Exame_Fisica_Online.mp4",
-    dataEnvio: "2024-10-16 09:15",
-    status: "Processando",
-  },
-  {
-    id: 3,
-    nome: "Avaliacao_Quimica_Turma_B.mp4",
-    dataEnvio: "2024-10-17 16:45",
-    status: "Processado",
-  },
-  {
-    id: 4,
-    nome: "Teste_Historia_EAD.mp4",
-    dataEnvio: "2024-10-18 11:20",
-    status: "Erro",
-  },
-  {
-    id: 5,
-    nome: "Prova_Biologia_Turma_C.mp4",
-    dataEnvio: "2024-10-19 08:00",
-    status: "Processando",
-  },
-];
+// Interface baseada no retorno do Backend Python
+interface Video {
+  id: number;
+  title: string;
+  original_filename: string;
+  created_at: string;
+  status: string;
+  summary_status: string;
+}
 
 export default function DashboardHome() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredVideos = mockVideos.filter((video) =>
-    video.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  // Busca dados reais do backend
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/videos`);
+        if (response.ok) {
+          const data = await response.json();
+          setVideos(data);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar vídeos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+    
+    // Atualiza a cada 10 segundos (Polling simples para ver mudança de status)
+    const interval = setInterval(fetchVideos, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const filteredVideos = videos.filter((video) =>
+    (video.title || video.original_filename).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      Processado: "default",
-      Processando: "secondary",
-      Erro: "destructive",
+      SUCCESS: "default",
+      PROCESSING: "secondary",
+      PENDING: "secondary",
+      FAILURE: "destructive",
     };
+
+    const label = {
+        SUCCESS: "Processado",
+        PROCESSING: "Processando",
+        PENDING: "Pendente",
+        FAILURE: "Erro"
+    }[status] || status;
 
     return (
       <Badge variant={variants[status] || "default"}>
-        {status}
+        {label}
       </Badge>
     );
+  };
+
+  // Formata data ISO para PT-BR
+  const formatDate = (isoString: string) => {
+      return new Date(isoString).toLocaleString('pt-BR');
   };
 
   return (
@@ -91,7 +104,7 @@ export default function DashboardHome() {
         </p>
       </motion.div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Calculados dinamicamente */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -106,7 +119,7 @@ export default function DashboardHome() {
             <FileVideo className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockVideos.length}</div>
+            <div className="text-2xl font-bold">{videos.length}</div>
           </CardContent>
         </Card>
 
@@ -116,7 +129,7 @@ export default function DashboardHome() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockVideos.filter((v) => v.status === "Processado").length}
+              {videos.filter((v) => v.status === "SUCCESS").length}
             </div>
           </CardContent>
         </Card>
@@ -127,7 +140,7 @@ export default function DashboardHome() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockVideos.filter((v) => v.status === "Processando").length}
+              {videos.filter((v) => v.status === "PROCESSING" || v.status === "PENDING").length}
             </div>
           </CardContent>
         </Card>
@@ -142,18 +155,10 @@ export default function DashboardHome() {
       >
         <Button
           onClick={() => navigate("/dashboard/upload-video")}
-          className="flex-1 sm:flex-initial"
+          className="flex-1 sm:flex-initial cursor-pointer"
         >
           <Upload className="mr-2 h-4 w-4" />
           Enviar Vídeo
-        </Button>
-        <Button
-          onClick={() => navigate("/dashboard/upload-streaming")}
-          variant="outline"
-          className="flex-1 sm:flex-initial"
-        >
-          <FileVideo className="mr-2 h-4 w-4" />
-          Streaming ao Vivo
         </Button>
       </motion.div>
 
@@ -166,86 +171,85 @@ export default function DashboardHome() {
         <Card>
           <CardHeader>
             <CardTitle>Vídeos Enviados</CardTitle>
-            <CardDescription>
-              Lista de todos os vídeos enviados para análise
-            </CardDescription>
           </CardHeader>
           <CardContent>
             {/* Search Bar */}
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Buscar por nome do arquivo..."
+                placeholder="Buscar por título..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
 
-            {/* Table - Desktop */}
-            <div className="hidden md:block rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome do Arquivo</TableHead>
-                    <TableHead>Data de Envio</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredVideos.length > 0 ? (
-                    filteredVideos.map((video) => (
-                      <TableRow key={video.id}>
-                        <TableCell className="font-medium">
-                          <Link to={`/dashboard/video/${video.id}`} className="hover:underline">
-                            {video.nome}
-                          </Link>
-                        </TableCell>
-                        <TableCell>{video.dataEnvio}</TableCell>
-                        <TableCell>{getStatusBadge(video.status)}</TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center py-8">
-                        Nenhum vídeo encontrado
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+            {loading ? (
+                <div className="flex justify-center py-10">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                </div>
+            ) : (
+                <>
+                    {/* Table - Desktop */}
+                    <div className="hidden md:block rounded-md border">
+                    <Table>
+                        <TableHeader>
+                        <TableRow>
+                            <TableHead>Título / Arquivo</TableHead>
+                            <TableHead>Data de Envio</TableHead>
+                            <TableHead>Risco</TableHead>
+                            <TableHead>Status</TableHead>
+                        </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                        {filteredVideos.length > 0 ? (
+                            filteredVideos.map((video) => (
+                            <TableRow key={video.id}>
+                                <TableCell className="font-medium">
+                                <Link to={`/dashboard/video/${video.id}`} className="hover:underline text-blue-600">
+                                    {video.title || video.original_filename}
+                                </Link>
+                                </TableCell>
+                                <TableCell>{formatDate(video.created_at)}</TableCell>
+                                <TableCell>
+                                    {video.summary_status === "Intensamente Suspeito" && <Badge variant="destructive">Alto</Badge>}
+                                    {video.summary_status === "Levemente Suspeito" && <Badge variant="secondary">Médio</Badge>}
+                                    {video.summary_status === "Normal" && <Badge variant="outline">Baixo</Badge>}
+                                    {video.summary_status === "Erro" && <span className="text-red-500">-</span>}
+                                    {video.summary_status === "Analisando" && <span className="text-gray-400">...</span>}
+                                </TableCell>
+                                <TableCell>{getStatusBadge(video.status)}</TableCell>
+                            </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                            <TableCell colSpan={4} className="text-center py-8">
+                                Nenhum vídeo encontrado
+                            </TableCell>
+                            </TableRow>
+                        )}
+                        </TableBody>
+                    </Table>
+                    </div>
 
-            {/* Cards - Mobile */}
-            <div className="md:hidden space-y-3">
-              {filteredVideos.length > 0 ? (
-                filteredVideos.map((video) => (
-                  <Card key={video.id}>
-                    <CardContent className="p-4">
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <Link to={`/dashboard/video/${video.id}`} className="font-medium text-sm break-all">
-                            {video.nome}
-                          </Link>
-                          {getStatusBadge(video.status)}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {video.dataEnvio}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">
-                      Nenhum vídeo encontrado
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+                    {/* Cards - Mobile (Simplificado) */}
+                    <div className="md:hidden space-y-3">
+                        {filteredVideos.map((video) => (
+                            <Card key={video.id}>
+                                <CardContent className="p-4">
+                                    <div className="flex justify-between mb-2">
+                                        <Link to={`/dashboard/video/${video.id}`} className="font-bold text-blue-600">
+                                            {video.title}
+                                        </Link>
+                                        {getStatusBadge(video.status)}
+                                    </div>
+                                    <p className="text-sm text-gray-500">{formatDate(video.created_at)}</p>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </>
+            )}
           </CardContent>
         </Card>
       </motion.div>
