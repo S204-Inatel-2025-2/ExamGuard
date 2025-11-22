@@ -30,9 +30,6 @@ function Navbar() {
           <Link to="/dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
-          <Link to="/dashboard/upload-streaming" className="hover:text-gray-600">
-            Upload Streaming
-          </Link>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
           </Button>
