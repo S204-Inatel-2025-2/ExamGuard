@@ -1,12 +1,20 @@
 import { motion } from "framer-motion";
-import { Crosshair, Menu, X } from "lucide-react";
+import { Crosshair, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { auth } from "~/utils/auth";
+import { Button } from "./ui/button";
 import { useMounted } from "~/hooks/use-mounted";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMounted = useMounted();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    auth.removeToken();
+    navigate('/login', { replace: true });
+  }
 
   return (
     <header className="border-b sticky top-0 bg-white dark:bg-gray-900 z-50">
@@ -22,9 +30,9 @@ function Navbar() {
           <Link to="/dashboard/upload-video" className="hover:text-gray-600">
             Upload Vídeo
           </Link>
-          <Link to="/dashboard/upload-streaming" className="hover:text-gray-600">
-            Upload Streaming
-          </Link>
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut className="h-4 w-4" />
+          </Button>
         </nav>
 
        <div className="md:hidden">
@@ -51,8 +59,10 @@ function Navbar() {
           <Link to="/dashboard/upload-streaming" className="hover:text-gray-600" onClick={() => setMobileMenuOpen(false)}>
             Upload Streaming
           </Link>
-          <div className="flex gap-2">
-          </div>
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Sair
+          </Button>
         </motion.nav>
       )}
     </header>
