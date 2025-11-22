@@ -197,14 +197,6 @@ export default function Dashboard() {
           <Upload className="mr-2 h-4 w-4" />
           Enviar Vídeo
         </Button>
-        <Button
-          onClick={() => navigate("/dashboard/upload-streaming")}
-          variant="outline"
-          className="flex-1 sm:flex-initial cursor-pointer"
-        >
-          <FileVideo className="mr-2 h-4 w-4" />
-          Streaming ao Vivo
-        </Button>
       </motion.div>
 
       {/* Table Section */}
