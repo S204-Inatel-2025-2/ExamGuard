@@ -17,7 +17,7 @@ function Navbar() {
   }
 
   return (
-    <header className="border-b sticky top-0 bg-white z-50">
+    <header className="border-b sticky top-0 bg-white dark:bg-gray-900 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
         <Link to="/dashboard" className="flex items-center gap-2 font-medium">
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">

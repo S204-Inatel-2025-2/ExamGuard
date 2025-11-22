@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
+const config = {
   plugins: [
     tailwindcss(),
     !process.env.VITEST && reactRouter(),
@@ -16,7 +16,7 @@ export default defineConfig({
     include: ['app/**/*.test.{ts,tsx}'], 
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json-summary', 'html'],
       exclude: [
         '**/node_modules/**',
         '**/__tests__/**', 
@@ -41,4 +41,6 @@ export default defineConfig({
       ],
     },
   },
-});
+};
+
+export default defineConfig(config as any);

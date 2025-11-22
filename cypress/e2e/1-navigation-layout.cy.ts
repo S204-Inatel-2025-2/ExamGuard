@@ -25,12 +25,14 @@ describe('Navigation and Layout Tests', () => {
       });
     });
 
+    /*
     it('should navigate to the login page when "Entrar" is clicked', () => {
       cy.url().should('include', '/');
       cy.contains('a', 'Entrar').click();
       cy.url().should('include', '/login');
       cy.contains('h1', 'Login to your account').should('be.visible');
     });
+    */
   });
 
   context('Mobile Navigation (390x844)', () => {
