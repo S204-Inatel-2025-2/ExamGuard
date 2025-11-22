@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Search, FileVideo, Upload } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { auth } from "~/utils/auth"; // Import do seu amigo
+import { auth } from "~/utils/auth";
 import {
   Table,
   TableBody,
@@ -31,7 +31,7 @@ interface Video {
   original_filename: string;
   created_at: string;
   status: string;
-  summary_status: string; //coluna de risco
+  summary_status: string;
 }
 
 interface DashboardData {
