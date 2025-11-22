@@ -170,13 +170,13 @@ function UploadStreaming() {
   }, [recordedUrl]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center light:bg-white">
       <Card className="w-full max-w-3xl shadow-2xl rounded-3xl overflow-hidden">
         <CardContent className="space-y-6">
           {/* Header */}
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-gray-800">Gravar Aula</h2>
-            <p className="text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-white">Gravar Aula</h2>
+            <p className="text-gray-600 dark:text-gray-300">
               {isRecording && "🔴 Gravando e enviando para o servidor..."}
               {!isRecording && !recordedUrl && "Clique para iniciar a gravação da sua aula"}
               {recordedUrl && "Gravação finalizada! Revise e envie"}
@@ -299,7 +299,7 @@ function UploadStreaming() {
           </div>
 
           {/* Info Box */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 text-sm text-gray-700">
+          <div className="border-blue-200 rounded-xl p-4 text-sm text-gray-700 dark:text-gray-300">
             <p className="font-semibold mb-1">💡 Como funciona:</p>
             <ul className="space-y-1 text-xs">
               <li>• A gravação é enviada em chunks de 2 segundos para o servidor</li>

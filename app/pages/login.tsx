@@ -7,6 +7,7 @@ import { useActionData, useNavigate } from "react-router"
 import { LoginEndpoints } from "~/utils/constants"
 import { toast } from "sonner"
 import { getLoginErrorMessageFromStatus } from "~/utils/utils"
+import { auth } from "~/utils/auth"
 export interface AuthState {
 	state: "login" | "register"
 }
@@ -48,23 +49,33 @@ export async function action({ request }: { request: Request }) {
 export default function LoginPage() {
   const actionData = useActionData<typeof action>();
 	const [authState, setAuthState] = useState<AuthState>({ state: "login" })
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (actionData?.mode === 'LOGIN' && actionData.token) {
-      localStorage.setItem("token", actionData.token);
-      toast.success('Logged in successfully!');
-      navigate('/dashboard');
+    if (auth.isAuthenticated()) {
+      navigate('/dashboard', { replace: true });
     }
-    if (actionData?.mode === 'REGISTER') {
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!actionData) return;
+    
+    if (actionData.error) {
+      toast.error(actionData.error.message ?? "Unknown error");
+      return;
+    }
+    
+    if (actionData.mode === 'LOGIN' && actionData.token) {
+      auth.setToken(actionData.token);
+      toast.success('Logged in successfully!');
+      navigate('/dashboard', { replace: true });
+    }
+    
+    if (actionData.mode === 'REGISTER') {
       setAuthState({ state: 'login' });
       toast.success('Registered successfully!');
     }
-    if(actionData?.error) {
-      // toast.error(JSON.stringify(actionData.error.message) ?? "Unknown error");
-      navigate('/dashboard');
-    }
-  }, [actionData]);
+  }, [actionData, navigate]);
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -88,7 +99,7 @@ export default function LoginPage() {
         <img
           src="/login-mascot.png"
           alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
     </div>
