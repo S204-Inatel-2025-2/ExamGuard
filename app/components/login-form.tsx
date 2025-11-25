@@ -17,13 +17,20 @@ export function LoginForm({
   ...props
 }: LoginFormProps) {
   const { method, encType, ...formProps } = props;
+  console.log(method, actionData);
 
   return (
     <Form
       method="post"
       replace
       className={cn("flex flex-col gap-6", className)}
-      encType={encType as any}
+      encType={
+        encType as
+          | "application/x-www-form-urlencoded"
+          | "multipart/form-data"
+          | "text/plain"
+          | undefined
+      }
       {...formProps}
     >
       <input type="hidden" name="mode" value="LOGIN" />
