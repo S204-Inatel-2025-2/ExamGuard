@@ -17,12 +17,15 @@ export function LoginForm({
   actionData,
   ...props
 }: LoginFormProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { method, ...formProps } = props;
+
   return (
     <Form
       method="post"
       replace
       className={cn("flex flex-col gap-6", className)}
-      {...props}
+      {...formProps}
     >
       <input type="hidden" name="mode" value="LOGIN" />
       <div className="flex flex-col items-center gap-2 text-center">

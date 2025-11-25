@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useParams } from "react-router";
 import Record from "../record";
-import { expect, test, describe, vi, Mock } from "vitest";
+import { expect, test, describe, vi, type Mock } from "vitest";
 
 const mockNavigate = vi.fn();
 
@@ -39,10 +39,12 @@ describe("Página de Registro", () => {
   test('Renderiza corretamente os detalhes de um vídeo "Processado"', async () => {
     renderRecordPage("1");
     const title = await screen.findByText("Prova_Matematica_Turma_A.mp4");
-    const mainCard = title.closest('div[data-slot="card"]');
+    const mainCard = title.closest('div[data-slot="card"]') as HTMLElement;
     expect(mainCard).toBeInTheDocument();
 
-    const cardHeader = mainCard!.querySelector('[data-slot="card-header"]');
+    const cardHeader = mainCard!.querySelector(
+      '[data-slot="card-header"]',
+    ) as HTMLElement;
     expect(cardHeader).toBeInTheDocument();
 
     expect(within(cardHeader!).getByText("Processado")).toBeInTheDocument();
@@ -56,10 +58,12 @@ describe("Página de Registro", () => {
   test('Renderiza corretamente um vídeo "Processando"', async () => {
     renderRecordPage("2");
     const title = await screen.findByText("Exame_Fisica_Online.mp4");
-    const mainCard = title.closest('div[data-slot="card"]');
+    const mainCard = title.closest('div[data-slot="card"]') as HTMLElement;
     expect(mainCard).toBeInTheDocument();
 
-    const cardHeader = mainCard!.querySelector('[data-slot="card-header"]');
+    const cardHeader = mainCard!.querySelector(
+      '[data-slot="card-header"]',
+    ) as HTMLElement;
     expect(cardHeader).toBeInTheDocument();
 
     expect(within(cardHeader!).getByText("Processando")).toBeInTheDocument();
@@ -70,10 +74,12 @@ describe("Página de Registro", () => {
   test('Renderiza corretamente um vídeo com status "Erro"', async () => {
     renderRecordPage("4");
     const title = await screen.findByText("Teste_Historia_EAD.mp4");
-    const mainCard = title.closest('div[data-slot="card"]');
+    const mainCard = title.closest('div[data-slot="card"]') as HTMLElement;
     expect(mainCard).toBeInTheDocument();
 
-    const cardHeader = mainCard!.querySelector('[data-slot="card-header"]');
+    const cardHeader = mainCard!.querySelector(
+      '[data-slot="card-header"]',
+    ) as HTMLElement;
     expect(cardHeader).toBeInTheDocument();
 
     expect(within(cardHeader!).getByText("Erro")).toBeInTheDocument();
@@ -90,7 +96,7 @@ describe("Página de Registro", () => {
     const modal = await screen.findByRole("heading", {
       name: /comportamento suspeito detectado/i,
     });
-    const modalContainer = modal.closest('div[class*="fixed"]');
+    const modalContainer = modal.closest('div[class*="fixed"]') as HTMLElement;
     expect(modalContainer).toBeInTheDocument();
 
     await waitFor(() => {

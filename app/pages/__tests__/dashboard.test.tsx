@@ -36,13 +36,13 @@ describe("DashboardHome", () => {
     renderDashboard();
     const totalVideosCard = (
       await screen.findByText("Total de Vídeos")
-    ).closest('div[data-slot="card"]');
+    ).closest('div[data-slot="card"]') as HTMLElement;
     const processadosCard = (await screen.findByText("Processados")).closest(
       'div[data-slot="card"]',
-    );
+    ) as HTMLElement;
     const emProcessoCard = (await screen.findByText("Em Processo")).closest(
       'div[data-slot="card"]',
-    );
+    ) as HTMLElement;
 
     await waitFor(() => {
       expect(within(totalVideosCard!).getByText("5")).toBeInTheDocument();
@@ -55,7 +55,7 @@ describe("DashboardHome", () => {
     renderDashboard();
     const tableContainer = screen
       .getByRole("table")
-      .closest("div.hidden.md\\:block");
+      .closest("div.hidden.md\\:block") as HTMLElement;
     expect(tableContainer).toBeInTheDocument();
 
     await waitFor(() => {
@@ -77,7 +77,7 @@ describe("DashboardHome", () => {
 
     const tableContainer = screen
       .getByRole("table")
-      .closest("div.hidden.md\\:block");
+      .closest("div.hidden.md\\:block") as HTMLElement;
     expect(tableContainer).toBeInTheDocument();
 
     await waitFor(() => {
@@ -99,7 +99,7 @@ describe("DashboardHome", () => {
 
     const tableContainer = screen
       .getByRole("table")
-      .closest("div.hidden.md\\:block");
+      .closest("div.hidden.md\\:block") as HTMLElement;
     expect(tableContainer).toBeInTheDocument();
 
     await waitFor(() => {
@@ -129,7 +129,7 @@ describe("DashboardHome", () => {
     renderDashboard();
     const tableContainer = screen
       .getByRole("table")
-      .closest("div.hidden.md\\:block");
+      .closest("div.hidden.md\\:block") as HTMLElement;
     expect(tableContainer).toBeInTheDocument();
 
     const videoLink = within(tableContainer!).getByText(

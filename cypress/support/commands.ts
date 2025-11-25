@@ -1,8 +1,16 @@
 /// <reference types="cypress" />
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(email?: string, password?: string): Chainable<void>;
+    }
+  }
+}
+
 Cypress.Commands.add(
   "login",
-  (email = "test@example.com", password = "password123") => {
+  (email: string = "test@example.com", password: string = "password123") => {
     cy.visit("/login");
     cy.get('input[name="email"]').type(email);
     cy.get('input[name="password"]').type(password);
@@ -10,3 +18,5 @@ Cypress.Commands.add(
     cy.url().should("include", "/dashboard");
   },
 );
+
+export {};
