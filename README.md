@@ -1,24 +1,27 @@
-# Welcome to React Router!
+# ExamGuard Frontend
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Front-end do sistema de monitoramento de exames ExamGuard, que tem como objetivo auxiliar professores e fiscalizadores de prova a detectar atitudes tidas como suspeitas de alunos que estão realizando exames.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+A versão web e já integrada ao Backend está disponível e pode ser encontrada no link abaixo
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-orange?style=for-the-badge)](https://examguard.site/)
 
 ## Features
+- 🔒 Login e Registro de Usuários
+- 🔄 Dashboard com registro de momentos 
+- 📖 Upload video 
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
+## Tecnologias
+- 🔄 Uso de React Router
+- 🔒 TypeScript por padrão
+- 🎉 TailwindCSS para estilização
 - 📖 [React Router docs](https://reactrouter.com/)
 
 ## Getting Started
 
 ### Installation
 
-Install the dependencies:
+Instale as dependências:
 
 ```bash
 npm install
@@ -26,17 +29,17 @@ npm install
 
 ### Development
 
-Start the development server with HMR:
+Inicie o server de development com:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Sua aplicação estará disponível em `http://localhost:5173`.
 
-## Building for Production
+## Build para a produção
 
-Create a production build:
+Criação:
 
 ```bash
 npm run build
@@ -46,7 +49,7 @@ npm run build
 
 ### Docker Deployment
 
-To build and run using Docker:
+Para buildar e rodar usando docker:
 
 ```bash
 docker build -t my-app .
@@ -54,8 +57,7 @@ docker build -t my-app .
 # Run the container
 docker run -p 3000:3000 my-app
 ```
-
-The containerized application can be deployed to any platform that supports Docker, including:
+A aplicação containerizada pode ser deployada para qualquer plataforma que permita Docker, incluindo:
 
 - AWS ECS
 - Google Cloud Run
@@ -66,9 +68,8 @@ The containerized application can be deployed to any platform that supports Dock
 
 ### DIY Deployment
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+Se você é familiar com deployar aplicações Node, o servidor integrado ao app está pronto para produção
+Faça o deploy do output de 'npm run build'
 
 ```
 ├── package.json
@@ -77,11 +78,5 @@ Make sure to deploy the output of `npm run build`
 │   ├── client/    # Static assets
 │   └── server/    # Server-side code
 ```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
 
 Built with ❤️ using React Router.
