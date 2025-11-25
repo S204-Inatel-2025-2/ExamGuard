@@ -18,13 +18,15 @@ export function LoginForm({
   ...props
 }: LoginFormProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { method, ...formProps } = props;
+  const { method, encType, ...formProps } = props;
 
   return (
     <Form
       method="post"
       replace
       className={cn("flex flex-col gap-6", className)}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      encType={encType as any}
       {...formProps}
     >
       <input type="hidden" name="mode" value="LOGIN" />
