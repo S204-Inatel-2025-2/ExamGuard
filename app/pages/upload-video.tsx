@@ -80,9 +80,10 @@ function UploadVideo() {
     formData.append("title", title);
 
     try {
-      const response = await api.post("/upload-video", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await api.post("/upload-video", formData, { timeout: 20000 })
+      //const response = await api.post("/upload-video", formData, {
+       // headers: { "Content-Type": "multipart/form-data" },
+      }
 
       const result = response.data;
 
