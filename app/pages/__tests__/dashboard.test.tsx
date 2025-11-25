@@ -113,13 +113,19 @@ describe("DashboardHome", () => {
     await screen.findByText("Total de Vídeos");
 
     const totalVideosLabel = screen.getByText("Total de Vídeos");
-    const totalVideosCard = totalVideosLabel.closest('div[data-slot="card"]');
+    const totalVideosCard = totalVideosLabel.closest(
+      'div[data-slot="card"]',
+    ) as HTMLElement;
 
     const processadosLabel = screen.getByText("Processados");
-    const processadosCard = processadosLabel.closest('div[data-slot="card"]');
+    const processadosCard = processadosLabel.closest(
+      'div[data-slot="card"]',
+    ) as HTMLElement;
 
     const emProcessoLabel = screen.getByText("Em Processo");
-    const emProcessoCard = emProcessoLabel.closest('div[data-slot="card"]');
+    const emProcessoCard = emProcessoLabel.closest(
+      'div[data-slot="card"]',
+    ) as HTMLElement;
 
     expect(totalVideosCard).toBeInTheDocument();
     expect(processadosCard).toBeInTheDocument();
