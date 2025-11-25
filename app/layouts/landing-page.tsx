@@ -1,6 +1,5 @@
-import { Outlet } from 'react-router';
-import Navbar from '../components/navbar';
-import LandingPageNavbar from '~/components/landing-page-navbar';
+import { Outlet } from "react-router";
+import LandingPageNavbar from "~/components/landing-page-navbar";
 
 export default function Layout() {
   return (

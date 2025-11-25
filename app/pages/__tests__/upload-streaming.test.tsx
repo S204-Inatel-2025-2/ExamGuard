@@ -13,7 +13,12 @@ import {
 
 const mockMediaStreamTrack = { stop: vi.fn() };
 const mockMediaStream = { getTracks: () => [mockMediaStreamTrack] };
-let mockMediaRecorderInstance: any;
+let mockMediaRecorderInstance: {
+  start: Mock;
+  stop: Mock;
+  ondataavailable: ((event: { data: Blob }) => void) | null;
+  onstop: (() => void) | null;
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -25,6 +30,7 @@ beforeEach(() => {
     onstop: null,
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   global.MediaRecorder = vi.fn(() => mockMediaRecorderInstance) as any;
 
   Object.defineProperty(navigator, "mediaDevices", {
@@ -71,7 +77,7 @@ describe("Componente UploadStreaming", () => {
       screen.getByRole("button", { name: /parar gravação/i }),
     );
     act(() => {
-      mockMediaRecorderInstance.onstop();
+      if (mockMediaRecorderInstance.onstop) mockMediaRecorderInstance.onstop();
     });
     await waitFor(() => {
       expect(mockMediaRecorderInstance.stop).toHaveBeenCalled();
@@ -90,7 +96,7 @@ describe("Componente UploadStreaming", () => {
       screen.getByRole("button", { name: /parar gravação/i }),
     );
     act(() => {
-      mockMediaRecorderInstance.onstop();
+      if (mockMediaRecorderInstance.onstop) mockMediaRecorderInstance.onstop();
     });
     await userEvent.click(
       await screen.findByRole("button", { name: /descartar/i }),
@@ -105,14 +111,17 @@ describe("Componente UploadStreaming", () => {
     );
 
     act(() => {
-      mockMediaRecorderInstance.ondataavailable({ data: new Blob(["chunk1"]) });
+      if (mockMediaRecorderInstance.ondataavailable)
+        mockMediaRecorderInstance.ondataavailable({
+          data: new Blob(["chunk1"]),
+        });
     });
 
     await userEvent.click(
       screen.getByRole("button", { name: /parar gravação/i }),
     );
     act(() => {
-      mockMediaRecorderInstance.onstop();
+      if (mockMediaRecorderInstance.onstop) mockMediaRecorderInstance.onstop();
     });
 
     await userEvent.click(

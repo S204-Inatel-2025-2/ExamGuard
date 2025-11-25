@@ -21,12 +21,12 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Link, useNavigate } from "react-router";
-import api from "~/services/axios-backend-client"; 
+import api from "~/services/axios-backend-client";
 import { toast } from "sonner";
 import { Skeleton } from "~/components/ui/skeleton";
 
 interface Video {
-  id: string; 
+  id: string;
   title: string;
   original_filename: string;
   created_at: string;
@@ -42,14 +42,16 @@ interface DashboardData {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   // Estado para guardar os dados da API
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!auth.isAuthenticated()) {
-      navigate('/login', { replace: true });
+      navigate("/login", { replace: true });
       return;
     }
 
@@ -57,17 +59,19 @@ export default function Dashboard() {
       setIsLoading(true);
       try {
         // Chama a rota unificada que retorna { data: { videos: [], processed_videos: 0 } }
-        const response = await api.get('/videos');
-        
+        const response = await api.get("/videos");
+
         if (response.data && response.data.data) {
           setDashboardData(response.data.data);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Erro ao buscar vídeos:", error);
-        if (error.response?.status === 401) {
-             navigate('/login');
+        if (
+          (error as { response?: { status: number } }).response?.status === 401
+        ) {
+          navigate("/login");
         } else {
-             toast.error('Erro ao carregar dashboard.');
+          toast.error("Erro ao carregar dashboard.");
         }
       } finally {
         setIsLoading(false);
@@ -75,12 +79,15 @@ export default function Dashboard() {
     };
 
     fetchVideos();
-    
+
     // Polling silencioso a cada 10s para atualizar status sem piscar a tela
     const interval = setInterval(() => {
-        api.get('/videos').then(res => {
-            if(res.data.data) setDashboardData(res.data.data);
-        }).catch(() => {});
+      api
+        .get("/videos")
+        .then((res) => {
+          if (res.data.data) setDashboardData(res.data.data);
+        })
+        .catch(() => {});
     }, 10000);
 
     return () => clearInterval(interval);
@@ -88,10 +95,12 @@ export default function Dashboard() {
 
   // Filtro local por título ou nome do arquivo
   const filteredVideos = (dashboardData?.videos || []).filter((video) =>
-    (video.title || video.original_filename).toLowerCase().includes(searchTerm.toLowerCase())
+    (video.title || video.original_filename)
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()),
   );
 
-  // Helper de Badge 
+  // Helper de Badge
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive"> = {
       SUCCESS: "default",
@@ -100,23 +109,20 @@ export default function Dashboard() {
       FAILURE: "destructive",
     };
 
-    const label = {
+    const label =
+      {
         SUCCESS: "Processado",
         PROCESSING: "Processando",
         PENDING: "Pendente",
-        FAILURE: "Erro"
-    }[status] || status;
+        FAILURE: "Erro",
+      }[status] || status;
 
-    return (
-      <Badge variant={variants[status] || "default"}>
-        {label}
-      </Badge>
-    );
+    return <Badge variant={variants[status] || "default"}>{label}</Badge>;
   };
 
   const formatDate = (isoString: string) => {
-      if (!isoString) return "-";
-      return new Date(isoString).toLocaleString('pt-BR');
+    if (!isoString) return "-";
+    return new Date(isoString).toLocaleString("pt-BR");
   };
 
   return (
@@ -143,39 +149,73 @@ export default function Dashboard() {
         {isLoading ? (
           <>
             {/* Skeletons*/}
-            <Card><CardHeader><Skeleton className="h-4 w-24"/></CardHeader><CardContent><Skeleton className="h-8 w-16"/></CardContent></Card>
-            <Card><CardHeader><Skeleton className="h-4 w-20"/></CardHeader><CardContent><Skeleton className="h-8 w-12"/></CardContent></Card>
-            <Card><CardHeader><Skeleton className="h-4 w-24"/></CardHeader><CardContent><Skeleton className="h-8 w-14"/></CardContent></Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-4 w-24" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-4 w-20" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-12" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-4 w-24" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-14" />
+              </CardContent>
+            </Card>
           </>
         ) : (
           <>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total de Vídeos</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total de Vídeos
+                </CardTitle>
                 <FileVideo className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{dashboardData?.videos.length || 0}</div>
+                <div className="text-2xl font-bold">
+                  {dashboardData?.videos.length || 0}
+                </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Processados</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{dashboardData?.processed_videos || 0}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Em Processo</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Processados
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                    {/* Cálculo: Total - (Processados + Falhas) */}
-                    {(dashboardData?.videos.length || 0) - (dashboardData?.processed_videos || 0) - (dashboardData?.videos.filter(v => v.status === 'FAILURE').length || 0)}
+                  {dashboardData?.processed_videos || 0}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Em Processo
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {/* Cálculo: Total - (Processados + Falhas) */}
+                  {(dashboardData?.videos.length || 0) -
+                    (dashboardData?.processed_videos || 0) -
+                    (dashboardData?.videos.filter((v) => v.status === "FAILURE")
+                      .length || 0)}
                 </div>
               </CardContent>
             </Card>
@@ -208,7 +248,9 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Vídeos Enviados</CardTitle>
-            <CardDescription>Lista de todos os vídeos enviados para análise</CardDescription>
+            <CardDescription>
+              Lista de todos os vídeos enviados para análise
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="relative mb-4">
@@ -235,28 +277,49 @@ export default function Dashboard() {
                   {isLoading ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell><Skeleton className="h-4 w-48" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-48" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-20" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-32" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-6 w-20" />
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : filteredVideos.length > 0 ? (
                     filteredVideos.map((video) => (
                       <TableRow key={video.id}>
                         <TableCell className="font-medium">
-                          <Link to={`/dashboard/video/${video.id}`} className="hover:underline text-blue-600">
+                          <Link
+                            to={`/dashboard/video/${video.id}`}
+                            className="hover:underline text-blue-600"
+                          >
                             {video.title || video.original_filename}
                           </Link>
                         </TableCell>
-                        
+
                         {/* Coluna de Risco */}
                         <TableCell>
-                            {video.summary_status === "Intensamente Suspeito" && <Badge variant="destructive">Alto</Badge>}
-                            {video.summary_status === "Levemente Suspeito" && <Badge variant="secondary">Médio</Badge>}
-                            {video.summary_status === "Normal" && <Badge variant="outline">Baixo</Badge>}
-                            {video.summary_status === "Erro" && <span className="text-red-500">-</span>}
-                            {video.summary_status === "Analisando" && <span className="text-gray-400">...</span>}
+                          {video.summary_status === "Intensamente Suspeito" && (
+                            <Badge variant="destructive">Alto</Badge>
+                          )}
+                          {video.summary_status === "Levemente Suspeito" && (
+                            <Badge variant="secondary">Médio</Badge>
+                          )}
+                          {video.summary_status === "Normal" && (
+                            <Badge variant="outline">Baixo</Badge>
+                          )}
+                          {video.summary_status === "Erro" && (
+                            <span className="text-red-500">-</span>
+                          )}
+                          {video.summary_status === "Analisando" && (
+                            <span className="text-gray-400">...</span>
+                          )}
                         </TableCell>
 
                         <TableCell>{formatDate(video.created_at)}</TableCell>

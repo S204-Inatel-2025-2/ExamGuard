@@ -1,27 +1,25 @@
 import { motion } from "framer-motion";
 import { Crosshair, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router"; 
+import { Link } from "react-router";
 import { useMounted } from "~/hooks/use-mounted";
 import { Button } from "./ui/button";
 
 function LandingPageNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
   const isMounted = useMounted();
 
   return (
     <header className="border-b sticky top-0 bg-white dark:bg-gray-900 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
         <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <Crosshair className="size-4" />
-            </div>
-            ExamGuard
-          </a>
+          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <Crosshair className="size-4" />
+          </div>
+          ExamGuard
+        </a>
 
-        <nav className="hidden md:flex items-center gap-12 text-sm font-medium">
-        </nav>
+        <nav className="hidden md:flex items-center gap-12 text-sm font-medium"></nav>
 
         <div className="hidden md:flex gap-2">
           <Button asChild variant="outline">
@@ -31,13 +29,15 @@ function LandingPageNavbar() {
         </div>
 
         {isMounted && (
-            <button
-                className="md:hidden"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            >
-                {mobileMenuOpen ? <X /> : <Menu />}
-            </button>
+          <button
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={
+              mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
+            }
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </button>
         )}
       </div>
 
@@ -49,7 +49,9 @@ function LandingPageNavbar() {
         >
           <div className="flex gap-2">
             <Button asChild variant="outline">
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Entrar</Link>
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                Entrar
+              </Link>
             </Button>
             <Button onClick={() => setMobileMenuOpen(false)}>Cadastro</Button>
           </div>

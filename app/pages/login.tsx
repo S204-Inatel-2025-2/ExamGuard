@@ -1,15 +1,17 @@
-import api from "~/services/axios-backend-client"
-import { Crosshair } from "lucide-react"
-import { useState, useEffect } from "react"
-import { LoginForm } from "~/components/login-form"
-import { RegisterForm } from "~/components/register-form"
-import { useActionData, useNavigate } from "react-router"
-import { LoginEndpoints } from "~/utils/constants"
-import { toast } from "sonner"
-import { getLoginErrorMessageFromStatus } from "~/utils/utils"
-import { auth } from "~/utils/auth"
+import api from "~/services/axios-backend-client";
+import { Crosshair } from "lucide-react";
+import { useState, useEffect } from "react";
+import { LoginForm } from "~/components/login-form";
+import { RegisterForm } from "~/components/register-form";
+import { useActionData, useNavigate } from "react-router";
+import { LoginEndpoints } from "~/utils/constants";
+import { toast } from "sonner";
+import { getLoginErrorMessageFromStatus } from "~/utils/utils";
+import { auth } from "~/utils/auth";
+
+// eslint-disable-next-line react-refresh/only-export-components
 export interface AuthState {
-	state: "login" | "register"
+  state: "login" | "register";
 }
 
 export async function action({ request }: { request: Request }) {
@@ -21,20 +23,25 @@ export async function action({ request }: { request: Request }) {
     const mode = formData.get("mode") as keyof typeof LoginEndpoints;
     const endpoint = LoginEndpoints[mode];
 
-    const apiResponse = await api.post(`${import.meta.env.VITE_API_URL}${endpoint}`, {
-      email,
-      password,
-      name
-    });
+    const apiResponse = await api.post(
+      `${import.meta.env.VITE_API_URL}${endpoint}`,
+      {
+        email,
+        password,
+        name,
+      },
+    );
 
     const token = apiResponse.data?.token || "dev";
 
     return { token, mode };
-  } catch (error: any) {
-    const status = error.response?.status ?? 500;
+  } catch (error: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const err = error as any;
+    const status = err.response?.status ?? 500;
     const message =
-      error.response?.data?.message ??
-      getLoginErrorMessageFromStatus(error.status) ??
+      err.response?.data?.message ??
+      getLoginErrorMessageFromStatus(status) ??
       "Unexpected server error";
 
     return {
@@ -48,32 +55,32 @@ export async function action({ request }: { request: Request }) {
 
 export default function LoginPage() {
   const actionData = useActionData<typeof action>();
-	const [authState, setAuthState] = useState<AuthState>({ state: "login" })
+  const [authState, setAuthState] = useState<AuthState>({ state: "login" });
   const navigate = useNavigate();
 
   useEffect(() => {
     if (auth.isAuthenticated()) {
-      navigate('/dashboard', { replace: true });
+      navigate("/dashboard", { replace: true });
     }
   }, [navigate]);
 
   useEffect(() => {
     if (!actionData) return;
-    
+
     if (actionData.error) {
       toast.error(actionData.error.message ?? "Unknown error");
       return;
     }
-    
-    if (actionData.mode === 'LOGIN' && actionData.token) {
+
+    if (actionData.mode === "LOGIN" && actionData.token) {
       auth.setToken(actionData.token);
-      toast.success('Logged in successfully!');
-      navigate('/dashboard', { replace: true });
+      toast.success("Logged in successfully!");
+      navigate("/dashboard", { replace: true });
     }
-    
-    if (actionData.mode === 'REGISTER') {
-      setAuthState({ state: 'login' });
-      toast.success('Registered successfully!');
+
+    if (actionData.mode === "REGISTER") {
+      setAuthState({ state: "login" });
+      toast.success("Registered successfully!");
     }
   }, [actionData, navigate]);
 
@@ -90,8 +97,12 @@ export default function LoginPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            {  authState.state === 'login' && <LoginForm setAuthState={setAuthState} actionData={actionData} /> }
-            {  authState.state === 'register' && <RegisterForm setAuthState={setAuthState} /> }
+            {authState.state === "login" && (
+              <LoginForm setAuthState={setAuthState} actionData={actionData} />
+            )}
+            {authState.state === "register" && (
+              <RegisterForm setAuthState={setAuthState} />
+            )}
           </div>
         </div>
       </div>
@@ -103,5 +114,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  )
+  );
 }
