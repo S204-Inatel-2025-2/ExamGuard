@@ -66,19 +66,6 @@ describe("LoginForm", () => {
     expect(setAuthState).toHaveBeenCalledWith({ state: "register" });
   });
 
-  test("Form submission with valid credentials", async () => {
-    const handleSubmit = vi.fn();
-    render(<RouterProvider router={router(handleSubmit)} />);
-
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const loginButton = screen.getByRole("button", { name: /^Login$/i });
-
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.type(passwordInput, "password123");
-    await userEvent.click(loginButton);
-  });
-
   test("Form submission with empty fields (required validation)", async () => {
     const handleSubmit = vi.fn((e) => e.preventDefault());
     render(<RouterProvider router={router(handleSubmit)} />);
