@@ -5,7 +5,7 @@ import { Label } from "~/components/ui/label";
 import type { AuthState } from "~/pages/login";
 import { Form } from "react-router";
 
-interface LoginFormProps extends React.ComponentProps<"form"> {
+interface LoginFormProps extends Omit<React.ComponentProps<"form">, "action"> {
   setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
   actionData?: unknown;
 }
@@ -13,11 +13,9 @@ interface LoginFormProps extends React.ComponentProps<"form"> {
 export function LoginForm({
   className,
   setAuthState,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actionData,
   ...props
 }: LoginFormProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { method, encType, ...formProps } = props;
 
   return (
@@ -25,17 +23,18 @@ export function LoginForm({
       method="post"
       replace
       className={cn("flex flex-col gap-6", className)}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       encType={encType as any}
       {...formProps}
     >
       <input type="hidden" name="mode" value="LOGIN" />
+
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-muted-foreground text-sm text-balance">
           Enter your email below to login to your account
         </p>
       </div>
+
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
@@ -47,6 +46,7 @@ export function LoginForm({
             required
           />
         </div>
+
         <div className="grid gap-3">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
@@ -59,17 +59,20 @@ export function LoginForm({
           </div>
           <Input id="password" name="password" type="password" required />
         </div>
+
         <Button
           type="submit"
           className="w-full hover:bg-[#131fa8] cursor-pointer"
         >
           Login
         </Button>
+
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
           </span>
         </div>
+
         <Button variant="outline" className="w-full">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path
@@ -80,6 +83,7 @@ export function LoginForm({
           Login with GitHub
         </Button>
       </div>
+
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
         <button
