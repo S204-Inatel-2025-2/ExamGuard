@@ -28,31 +28,8 @@ jobs:
       - name: Executar análise estática (typecheck)
         run: npm run typecheck
 
-  testes-unitarios:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clonar repo
-        uses: actions/checkout@v4
-
-      - name: Configurar ambiente Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Instalar deps
-        run: npm ci
-
-      - name: Executar testes e gerar cobertura
-        run: npm run test:coverage
-
-      - name: Enviar relatorio de cobertura
-        uses: actions/upload-artifact@v4
-        with:
-          name: relatorio-cobertura
-          path: ./coverage/
-
   compilacao:
+    needs: [analise-estatica]
     runs-on: ubuntu-latest
     steps:
       - name: Clonar repositório
@@ -75,6 +52,31 @@ jobs:
         with:
           name: build-producao
           path: ./build/
+
+  testes-unitarios:
+    needs: [compilacao]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Instalar deps
+        run: npm ci
+
+      - name: Executar testes e gerar cobertura
+        run: npm run test:coverage
+
+      - name: Enviar relatorio de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-cobertura
+          path: ./coverage/
 
   # testes-e2e:
   #   needs: compilacao
@@ -137,12 +139,6 @@ jobs:
         with:
           name: relatorio-cobertura
           path: ./coverage/
-
-      - name: Baixar relatórios do Cypress
-        uses: actions/download-artifact@v4
-        with:
-          name: relatorios-cypress
-          path: ./cypress/reports/
 
       - name: Gerar relatório de teste combinado
         run: node scripts/generate-report.js
