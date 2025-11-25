@@ -83,20 +83,19 @@ describe("Página de Registro", () => {
     (api.get as Mock).mockResolvedValue({ data: mockVideo });
 
     renderRecordPage("1");
+
+    // Verifica título e badge de status
     const title = await screen.findByText("Prova_Matematica_Turma_A.mp4");
-    const mainCard = title.closest('div[data-slot="card"]') as HTMLElement;
-    expect(mainCard).toBeInTheDocument();
+    expect(title).toBeInTheDocument();
+    expect(screen.getByText("SUCCESS")).toBeInTheDocument();
 
-    const cardHeader = mainCard!.querySelector(
-      '[data-slot="card-header"]',
-    ) as HTMLElement;
-    expect(cardHeader).toBeInTheDocument();
+    // Verifica cards de informação
+    expect(screen.getByText("Duração Processamento")).toBeInTheDocument();
+    expect(screen.getByText("2m")).toBeInTheDocument();
 
-    // Verifica o status no Badge
-    expect(within(cardHeader!).getByText("SUCCESS")).toBeInTheDocument();
+    expect(screen.getByText("Highlights")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument(); // Contagem de highlights
 
-    // Verifica contagem de highlights e descrição
-    expect(screen.getByText("1")).toBeInTheDocument(); // highlightsGerados
     expect(
       screen.getByText("Comportamento suspeito detectado"),
     ).toBeInTheDocument();
@@ -122,6 +121,7 @@ describe("Página de Registro", () => {
     expect(
       screen.getByText("O vídeo está sendo processado..."),
     ).toBeInTheDocument();
+    expect(screen.getByText("PROCESSING")).toBeInTheDocument();
   });
 
   test("Renderiza corretamente mensagem de erro ao falhar carregamento", async () => {
@@ -133,9 +133,13 @@ describe("Página de Registro", () => {
   });
 
   test('O botão "Voltar ao Dashboard" navega corretamente', async () => {
-    (api.get as Mock).mockRejectedValue({ response: { status: 404 } }); // Força tela de erro que tem o botão
+    (api.get as Mock).mockRejectedValue({ response: { status: 404 } });
     renderRecordPage("1");
-    const backButton = await screen.findByRole("button", {
+
+    // Aguarda renderizar a tela de erro
+    await screen.findByText("Erro");
+
+    const backButton = screen.getByRole("button", {
       name: /voltar ao dashboard/i,
     });
     await userEvent.click(backButton);

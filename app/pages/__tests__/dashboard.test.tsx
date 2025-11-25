@@ -75,7 +75,7 @@ describe("DashboardHome", () => {
   ];
 
   const mockDashboardData = {
-    processed_videos: 2, // Ajustado para bater com os cards
+    processed_videos: 2,
     videos: mockVideos,
   };
 
@@ -98,6 +98,10 @@ describe("DashboardHome", () => {
             path="/dashboard/upload-video"
             element={<div>Upload Video Page</div>}
           />
+          <Route
+            path="/dashboard/upload-streaming"
+            element={<div>Upload Streaming Page</div>}
+          />
         </Routes>
       </MemoryRouter>,
     );
@@ -105,108 +109,102 @@ describe("DashboardHome", () => {
   test("Renderiza o card de status com contagem correta", async () => {
     renderDashboard();
 
-    // Aguarda sair do estado de loading (esqueletos sumirem)
-    await waitFor(() => {
-      expect(screen.queryByTestId("skeleton")).not.toBeInTheDocument();
-    });
+    // Aguarda o carregamento dos dados
+    await screen.findByText("Total de Vídeos");
 
-    const totalVideosCard = (
-      await screen.findByText("Total de Vídeos")
-    ).closest('div[data-slot="card"]') as HTMLElement;
-    const processadosCard = (await screen.findByText("Processados")).closest(
-      'div[data-slot="card"]',
-    ) as HTMLElement;
-    const emProcessoCard = (await screen.findByText("Em Processo")).closest(
-      'div[data-slot="card"]',
-    ) as HTMLElement;
+    const totalVideosLabel = screen.getByText("Total de Vídeos");
+    const totalVideosCard = totalVideosLabel.closest('div[data-slot="card"]');
 
-    await waitFor(() => {
-      expect(within(totalVideosCard!).getByText("5")).toBeInTheDocument();
-      expect(within(processadosCard!).getByText("2")).toBeInTheDocument();
-      // Cálculo no componente: Total (5) - Processados (2) - Falhas (1) = 2
-      expect(within(emProcessoCard!).getByText("2")).toBeInTheDocument();
-    });
+    const processadosLabel = screen.getByText("Processados");
+    const processadosCard = processadosLabel.closest('div[data-slot="card"]');
+
+    const emProcessoLabel = screen.getByText("Em Processo");
+    const emProcessoCard = emProcessoLabel.closest('div[data-slot="card"]');
+
+    expect(totalVideosCard).toBeInTheDocument();
+    expect(processadosCard).toBeInTheDocument();
+    expect(emProcessoCard).toBeInTheDocument();
+
+    // Verifica os valores dentro dos cards
+    expect(within(totalVideosCard!).getByText("5")).toBeInTheDocument();
+    expect(within(processadosCard!).getByText("2")).toBeInTheDocument();
+    expect(within(emProcessoCard!).getByText("2")).toBeInTheDocument();
   });
 
   test("Renderiza a tabela com todos os vídeos inicialmente", async () => {
     renderDashboard();
-    const tableContainer = (await screen.findByRole("table")).closest(
-      "div.hidden.md\\:block",
-    ) as HTMLElement;
-    expect(tableContainer).toBeInTheDocument();
+    // Aguarda carregamento
+    await screen.findByText("Total de Vídeos");
 
-    await waitFor(() => {
-      expect(
-        within(tableContainer!).getByText("Prova_Matematica_Turma_A.mp4"),
-      ).toBeInTheDocument();
-      expect(
-        within(tableContainer!).getByText("Exame_Fisica_Online.mp4"),
-      ).toBeInTheDocument();
-    });
+    // Busca a tabela diretamente pelo role
+    const table = screen.getByRole("table");
+    expect(table).toBeInTheDocument();
+
+    expect(
+      within(table).getByText("Prova_Matematica_Turma_A.mp4"),
+    ).toBeInTheDocument();
+    expect(
+      within(table).getByText("Exame_Fisica_Online.mp4"),
+    ).toBeInTheDocument();
   });
 
   test("Filtra a lista de vídeos quando usuário digita na pesquisa", async () => {
     renderDashboard();
-    const searchInput = await screen.findByPlaceholderText(
+    await screen.findByText("Total de Vídeos");
+
+    const searchInput = screen.getByPlaceholderText(
       "Buscar por nome do arquivo...",
     );
     await userEvent.type(searchInput, "Matematica");
 
-    const tableContainer = (await screen.findByRole("table")).closest(
-      "div.hidden.md\\:block",
-    ) as HTMLElement;
-    expect(tableContainer).toBeInTheDocument();
+    const table = screen.getByRole("table");
 
     await waitFor(() => {
       expect(
-        within(tableContainer!).getByText("Prova_Matematica_Turma_A.mp4"),
+        within(table).getByText("Prova_Matematica_Turma_A.mp4"),
       ).toBeInTheDocument();
       expect(
-        within(tableContainer!).queryByText("Exame_Fisica_Online.mp4"),
+        within(table).queryByText("Exame_Fisica_Online.mp4"),
       ).not.toBeInTheDocument();
     });
   });
 
   test('Mostra "nenhum video encontrado" quando nenhum vídeo é encontrado', async () => {
     renderDashboard();
-    const searchInput = await screen.findByPlaceholderText(
+    await screen.findByText("Total de Vídeos");
+
+    const searchInput = screen.getByPlaceholderText(
       "Buscar por nome do arquivo...",
     );
     await userEvent.type(searchInput, "NonExistentVideo");
 
-    const tableContainer = (await screen.findByRole("table")).closest(
-      "div.hidden.md\\:block",
-    ) as HTMLElement;
-    expect(tableContainer).toBeInTheDocument();
+    const table = screen.getByRole("table");
 
     await waitFor(() => {
       expect(
-        within(tableContainer!).getByText("Nenhum vídeo encontrado"),
+        within(table).getByText("Nenhum vídeo encontrado"),
       ).toBeInTheDocument();
     });
   });
 
   test('Navega pra upload de video quando clica em "enviar vídeo"', async () => {
     renderDashboard();
-    const uploadButton = await screen.findByRole("button", {
-      name: /enviar vídeo/i,
-    });
+    await screen.findByText("Total de Vídeos");
+
+    const uploadButton = screen.getByRole("button", { name: /enviar vídeo/i });
     await userEvent.click(uploadButton);
     expect(mockNavigate).toHaveBeenCalledWith("/dashboard/upload-video");
   });
 
   test("Navega pra pagina de detalhe quando o link é clicado", async () => {
     renderDashboard();
-    const tableContainer = (await screen.findByRole("table")).closest(
-      "div.hidden.md\\:block",
-    ) as HTMLElement;
-    expect(tableContainer).toBeInTheDocument();
+    await screen.findByText("Total de Vídeos");
 
-    const videoLink = within(tableContainer!).getByText(
-      "Prova_Matematica_Turma_A.mp4",
-    );
+    const table = screen.getByRole("table");
+    const videoLink = within(table).getByText("Prova_Matematica_Turma_A.mp4");
+
     await userEvent.click(videoLink);
-    // Link do React Router funciona internamente no MemoryRouter
+    // O router interno navega para a rota simulada
     expect(screen.getByText("Video Details Page")).toBeInTheDocument();
   });
 });
