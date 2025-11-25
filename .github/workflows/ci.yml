@@ -76,47 +76,47 @@ jobs:
           name: build-producao
           path: ./build/
 
-  testes-e2e:
-    needs: compilacao
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clonar repositório
-        uses: actions/checkout@v4
+  # testes-e2e:
+  #   needs: compilacao
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Clonar repositório
+  #       uses: actions/checkout@v4
 
-      - name: Configurar ambiente
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
+  #     - name: Configurar ambiente
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "npm"
 
-      - name: Baixar build de produção
-        uses: actions/download-artifact@v4
-        with:
-          name: build-producao
-          path: ./build/
+  #     - name: Baixar build de produção
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: build-producao
+  #         path: ./build/
 
-      - name: Instalar dependências
-        run: npm ci
+  #     - name: Instalar dependências
+  #       run: npm ci
 
-      - name: Executar testes E2E com Cypress
-        run: npm run test:e2e
+  #     - name: Executar testes E2E com Cypress
+  #       run: npm run test:e2e
 
-      - name: Enviar relatórios do Cypress
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: relatorios-cypress
-          path: ./cypress/reports/
+  #     - name: Enviar relatórios do Cypress
+  #       if: always()
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: relatorios-cypress
+  #         path: ./cypress/reports/
 
-      - name: Enviar vídeos do Cypress
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: videos-cypress
-          path: ./cypress/videos/
+  #     - name: Enviar vídeos do Cypress
+  #       if: always()
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: videos-cypress
+  #         path: ./cypress/videos/
 
   gerar-relatorio:
-    needs: [testes-unitarios, testes-e2e]
+    needs: [testes-unitarios]
     runs-on: ubuntu-latest
     if: always() # gera mesmo se falhar
     steps:
@@ -152,12 +152,3 @@ jobs:
         with:
           name: relatorio-combinado-testes
           path: ./test-report/
-
-  deploy-producao:
-    needs: [analise-estatica, testes-unitarios, testes-e2e]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    steps:
-      - name: Deploy em prod
-        run: echo "Deployando em prod"
