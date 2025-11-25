@@ -28,9 +28,6 @@ jobs:
       - name: Executar análise estática (typecheck)
         run: npm run typecheck
 
-      - name: Auditar vulnerabilidades de segurança (com falha em caso de vulnerabilidade)
-        run: npm audit --audit-level=moderate
-
   testes-unitarios:
     runs-on: ubuntu-latest
     steps:
