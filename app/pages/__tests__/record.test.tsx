@@ -81,20 +81,21 @@ describe("Página de Registro", () => {
       tempoProcessamento: "2m",
     };
     (api.get as Mock).mockResolvedValue({ data: mockVideo });
-
     renderRecordPage("1");
 
     // Verifica título e badge de status
     const title = await screen.findByText("Prova_Matematica_Turma_A.mp4");
     expect(title).toBeInTheDocument();
-    expect(screen.getByText("SUCCESS")).toBeInTheDocument();
+
+    // Status appears in Badge and Info Card
+    expect(screen.getAllByText("SUCCESS")).toHaveLength(2);
 
     // Verifica cards de informação
     expect(screen.getByText("Duração Processamento")).toBeInTheDocument();
     expect(screen.getByText("2m")).toBeInTheDocument();
 
     expect(screen.getByText("Highlights")).toBeInTheDocument();
-    expect(screen.getByText("1")).toBeInTheDocument(); // Contagem de highlights
+    expect(screen.getAllByText("1")).toHaveLength(1); // Contagem de highlights
 
     expect(
       screen.getByText("Comportamento suspeito detectado"),
@@ -121,7 +122,9 @@ describe("Página de Registro", () => {
     expect(
       screen.getByText("O vídeo está sendo processado..."),
     ).toBeInTheDocument();
-    expect(screen.getByText("PROCESSING")).toBeInTheDocument();
+
+    // Status appears in Badge and Info Card
+    expect(screen.getAllByText("PROCESSING")).toHaveLength(2);
   });
 
   test("Renderiza corretamente mensagem de erro ao falhar carregamento", async () => {
@@ -135,7 +138,6 @@ describe("Página de Registro", () => {
   test('O botão "Voltar ao Dashboard" navega corretamente', async () => {
     (api.get as Mock).mockRejectedValue({ response: { status: 404 } });
     renderRecordPage("1");
-
     // Aguarda renderizar a tela de erro
     await screen.findByText("Erro");
 
