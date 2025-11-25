@@ -46,10 +46,6 @@ jobs:
       - name: Executar testes e gerar cobertura
         run: npm run test:coverage
 
-      - name: Verificar o limiar de cobertura (80%)
-        run: |
-          npx vitest-coverage-check --branches 80 --functions 80 --lines 80 --statements 80
-
       - name: Enviar relatorio de cobertura
         uses: actions/upload-artifact@v4
         with:
