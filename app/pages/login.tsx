@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import api from "~/services/axios-backend-client";
 import { Crosshair } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -9,7 +10,6 @@ import { toast } from "sonner";
 import { getLoginErrorMessageFromStatus } from "~/utils/utils";
 import { auth } from "~/utils/auth";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export interface AuthState {
   state: "login" | "register";
 }

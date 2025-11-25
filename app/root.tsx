@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   isRouteErrorResponse,
   Links,
@@ -25,7 +26,6 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
