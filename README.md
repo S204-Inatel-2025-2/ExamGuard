@@ -6,7 +6,7 @@ A versão web e já integrada ao Backend está disponível e pode ser encontrada
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-orange?style=for-the-badge)](https://examguard.site/)
 
-## Features
+## Funcionalidades
 - 🔒 Login e Registro de Usuários
 - 🔄 Dashboard com registro de momentos 
 - 📖 Upload video 
