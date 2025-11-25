@@ -207,7 +207,7 @@ function UploadVideo() {
               onClick={handleUpload}
               disabled={isUploading || !title}
             >
-              {isUploading ? "Enviando..." : "Iniciar Análi"}
+              {isUploading ? "Enviando..." : "Iniciar Análise"}
             </Button>
           )}
         </CardContent>
