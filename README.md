@@ -3,6 +3,7 @@
 Front-end do sistema de monitoramento de exames ExamGuard, que tem como objetivo auxiliar professores e fiscalizadores de prova a detectar atitudes tidas como suspeitas de alunos que estão realizando exames.
 
 A versão web e já integrada ao Backend está disponível e pode ser encontrada no link abaixo
+
 [![Live Demo](https://img.shields.io/badge/Live-Demo-orange?style=for-the-badge)](https://examguard.site/)
 
 ## Features
